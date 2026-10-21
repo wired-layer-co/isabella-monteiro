@@ -9,7 +9,7 @@
 :root {
   --paper: #fbfbf8;
   --ink: #000000;
-  --terracotta: #a26a42;
+  --terracotta: #9f6740;
   --olive: #6c6a51;
   --olive-panel: #79775a;
   --butter: #f9e8ac;
@@ -62,6 +62,8 @@ a { text-underline-offset: 0.22em; }
   outline: 3px solid var(--terracotta);
   outline-offset: 4px;
 }
+
+.category :focus-visible { outline-color: var(--butter); }
 
 .skip-link {
   position: fixed;
@@ -261,14 +263,12 @@ main { padding-top: var(--header-height); }
 
 .hero-portrait {
   position: relative;
-  width: 100vw;
+  width: 100%;
   aspect-ratio: 1122 / 1400;
   height: auto;
   margin: clamp(18px, 3.5vw, 34px) 0 0;
-  margin-left: 50%;
   overflow: hidden;
   background: var(--olive);
-  transform: translateX(-50%);
 }
 
 .hero-portrait-inner {
@@ -324,7 +324,8 @@ main { padding-top: var(--header-height); }
 }
 
 .about h2 {
-  margin: 0 0 clamp(32px, 5vw, 64px);
+  max-width: 1300px;
+  margin: 0 auto clamp(32px, 5vw, 64px);
   font-size: clamp(2.4rem, 5.6vw, 5rem);
   font-style: italic;
   font-weight: 400;
@@ -419,6 +420,7 @@ main { padding-top: var(--header-height); }
 .works-links {
   display: flex;
   flex-wrap: wrap;
+  align-items: center;
   justify-content: center;
   gap: clamp(20px, 4vw, 46px);
   margin: clamp(30px, 4.5vw, 52px) auto 0;
@@ -536,7 +538,7 @@ main { padding-top: var(--header-height); }
   margin: 0 0 clamp(30px, 4vw, 48px);
   font-size: clamp(0.98rem, 1.5vw, 1.4rem);
   line-height: 1.5;
-  color: var(--muted-paper);
+  color: var(--paper);
 }
 
 .work-gallery {
@@ -549,6 +551,7 @@ main { padding-top: var(--header-height); }
   touch-action: pan-y;
 }
 .work-gallery.is-audiovisual { aspect-ratio: 16 / 9; }
+.work-gallery.is-portrait { width: min(100%, 900px); margin-inline: auto; }
 .work-gallery:active { cursor: grabbing; }
 
 .work-track {
@@ -646,7 +649,7 @@ main { padding-top: var(--header-height); }
   grid-column: 1 / -1;
   grid-row: 1;
   margin: 0 0 clamp(10px, 2vw, 24px);
-  font-size: clamp(2.6rem, 10.5vw, 9rem);
+  font-size: clamp(2.6rem, 10vw, 8.5rem);
   line-height: 0.78;
   white-space: nowrap;
 }
@@ -667,7 +670,7 @@ main { padding-top: var(--header-height); }
   max-width: 540px;
   margin: 0;
   padding: 0 24px;
-  color: var(--paper);
+  color: #fff;
   background: var(--olive-panel);
   border-top: 1px solid var(--line-light);
   list-style: none;
@@ -702,6 +705,7 @@ main { padding-top: var(--header-height); }
   height: 100%;
   object-fit: cover;
   object-position: center;
+  filter: brightness(1.1) contrast(1.02);
 }
 
 /* contato */
@@ -834,7 +838,7 @@ main { padding-top: var(--header-height); }
   .hero-strip { padding-inline: var(--edge-gutter); }
   .hero-strip figure { aspect-ratio: 0.61; }
   .hero-portrait { margin-top: 18px; }
-  .hero-portrait figcaption { right: 14px; bottom: 22px; font-size: clamp(3rem, 14vw, 4.6rem); }
+  .hero-portrait figcaption { right: 14px; bottom: 34px; font-size: clamp(2.6rem, 12vw, 4.4rem); }
 
   .about { padding-block: 56px; }
   .about h2 { margin-bottom: 30px; font-size: clamp(2.25rem, 11vw, 3rem); }
@@ -873,7 +877,7 @@ main { padding-top: var(--header-height); }
   .backstage-title { font-size: clamp(2.3rem, 10.8vw, 3.4rem); }
   .backstage-intro { font-size: 1rem; }
   .backstage-list { max-width: 100%; padding-inline: 20px; }
-  .backstage-list li { padding: 17px 0; font-size: 0.68rem; }
+  .backstage-list li { padding: 17px 0; font-size: 0.72rem; }
   .backstage-photo { max-width: 300px; justify-self: start; }
 
   .contact { padding-block: 50px 26px; }
@@ -892,7 +896,7 @@ main { padding-top: var(--header-height); }
 
 @media (max-width: 380px) {
   .hero h1 { font-size: 2rem; }
-  .hero-brush { font-size: 3.5rem; }
+  .hero-brush { font-size: clamp(2.9rem, 15.5vw, 5rem); }
   .pill { width: 44vw; }
   .contact-panel a { grid-template-columns: auto minmax(0, 1fr) 18px; }
 }
@@ -911,7 +915,7 @@ main { padding-top: var(--header-height); }
 @media print {
   @page { size: A4; margin: 11mm; }
 
-  :root { --paper: #fff; --ink: #111; --terracotta: #a26a42; --olive: #6c6a51; --butter: #f8e7ac; }
+  :root { --paper: #fff; --ink: #111; --terracotta: #9f6740; --olive: #6c6a51; --butter: #f8e7ac; }
 
   html, body { background: #fff; }
   .site-header, .skip-link, .works-links, .work-controls, .work-shade, .footer-credit { display: none !important; }

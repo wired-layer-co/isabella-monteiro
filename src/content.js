@@ -48,6 +48,7 @@ export const works = [
     title: 'Quem Me Derá Ser Amada',
     year: '',
     medium: 'Audiovisual',
+    ratio: '16 / 9',
     direction: '',
     script: '',
     description: '',
@@ -105,6 +106,7 @@ export const works = [
       '/images/divina-tragicomedia-3.webp',
     ],
     alt: 'Isabella Monteiro em cena em A Divina Tragicomédia de Dionísio',
+    ratio: '3 / 4',
     focus: '50% 62%',
   },
   {
@@ -126,6 +128,7 @@ export const works = [
       '/images/historia-6.webp',
     ],
     alt: 'Elenco de A História é uma História no palco',
+    ratio: '3 / 4',
     focus: '50% 55%',
   },
   {
@@ -139,12 +142,13 @@ export const works = [
     description:
       'Espetáculo teatral com direção de João Mauro Cruz e criação do grupo, no Teatro Barracão Encena.',
     images: [
-      '/images/teicoscopia-3.webp',
       '/images/teicoscopia-1.webp',
       '/images/teicoscopia-2.webp',
       '/images/teicoscopia-4.webp',
+      '/images/teicoscopia-3.webp',
     ],
     alt: 'Isabella Monteiro em cena em Teicoscopia ou Vaudeville do Horror',
+    ratio: '3 / 2',
     focus: '50% 35%',
   },
   {
@@ -166,6 +170,7 @@ export const works = [
       '/images/black-tie-6.webp',
     ],
     alt: 'Elenco de Elas não Usam Black-Tie em cena',
+    ratio: '3 / 2',
     focus: '50% 45%',
   },
 ]

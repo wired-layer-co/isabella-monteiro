@@ -205,6 +205,7 @@ function Carousel({ work }) {
 
   const startDrag = (event) => {
     if (count < 2) return
+    if (event.target.closest?.('.work-controls')) return
     if (event.pointerType === 'mouse' && event.button !== 0) return
     drag.current = { active: true, startX: event.clientX, startY: event.clientY }
     setDragging(true)
@@ -241,9 +242,13 @@ function Carousel({ work }) {
     }
   }
 
+  const [ratioWidth, ratioHeight] = work.ratio ? work.ratio.split('/').map(Number) : []
+  const portraitFrame = Boolean(ratioWidth && ratioHeight && ratioWidth < ratioHeight)
+
   return (
     <div
-      className={`work-gallery is-${work.category}`}
+      className={`work-gallery is-${work.category}${portraitFrame ? ' is-portrait' : ''}`}
+      style={work.ratio ? { aspectRatio: work.ratio } : undefined}
       role="group"
       aria-label={`Fotos de ${work.title}`}
       tabIndex={count > 1 ? 0 : undefined}
@@ -294,7 +299,7 @@ function Project({ work }) {
     <article className="project">
       <header className="project-copy">
         <h3>{work.title}</h3>
-        {work.year && <p className="project-year">{work.year}</p>}
+        {(work.year || work.medium) && <p className="project-year">{work.year || work.medium}</p>}
         {(work.direction || work.script) && (
           <dl className="project-credits">
             {work.direction && <div><dt>Direção</dt><dd>{work.direction}</dd></div>}
