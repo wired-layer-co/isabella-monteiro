@@ -24,7 +24,12 @@ const chromeCandidates = [
   '/usr/bin/google-chrome',
 ].filter(Boolean)
 
-const chrome = chromeCandidates.find((candidate) => existsSync(candidate)) ?? 'chromium'
+const chrome = chromeCandidates.find((candidate) => existsSync(candidate))
+
+if (!chrome) {
+  console.warn('Chrome/Chromium nao encontrado; o PDF existente em public/portfolio-isabella-monteiro.pdf foi preservado.')
+  process.exit(0)
+}
 
 const contentTypes = {
   '.css': 'text/css',
