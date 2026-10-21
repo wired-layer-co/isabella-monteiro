@@ -5,11 +5,9 @@ Portfólio de Isabella Monteiro para teatro e audiovisual. O site reúne trajet�
 ## Stack
 
 - React 19 + Vite
-- Poppins para textos, títulos e interface
-- Biro Script Plus para os títulos de pincel
+- Motion para entradas e trocas fotográficas
 - Phosphor Icons
-
-A fonte Biro Script Plus está em `public/fonts/biro-script-plus.woff2`; a Poppins é servida via `@fontsource/poppins`.
+- Archivo Variable + Road Rage, ambas servidas localmente
 
 ## Desenvolvimento
 
@@ -27,25 +25,19 @@ npm run build
 
 ## PDF para download
 
-O link "Baixar em PDF" no fim da página baixa `public/portfolio-isabella-monteiro.pdf`, gerado a partir da própria página com os estilos de impressão A4 de `src/styles.css`.
+O link "Baixar em PDF" no fim da página (seção de contato) baixa `public/portfolio-isabella-monteiro.pdf`, gerado a partir da própria página com os estilos de impressão A4 de `src/styles.css`.
 
-O PDF é atualizado automaticamente depois de cada build:
-
-```bash
-npm run build
-```
-
-O script `postbuild` executa `scripts/generate-pdf.mjs`. Para gerar manualmente:
+Para regerar depois de mudar conteúdo ou imagens:
 
 ```bash
 npm run pdf
 ```
 
-O gerador usa Chrome/Chromium (defina `CHROME_BIN` se necessário) e, quando disponível, otimiza o arquivo com Ghostscript. Se o navegador não estiver disponível, o PDF existente é preservado e o build continua.
+O script usa Chrome/Chromium (defina `CHROME_BIN` se necessário) e, quando disponível, otimiza o arquivo com Ghostscript.
 
 ## Conteúdo e imagens
 
-O conteúdo factual vem do briefing da atriz. As fotografias foram extraídas do portfólio anterior e do pacote de imagens de 21/10/2026. A procedência está documentada em `public/images/SOURCES.md`.
+O conteúdo factual vem do briefing da atriz. As fotografias foram extraídas do portfólio anterior fornecido pela cliente e convertidas para WebP. A procedência está documentada em `public/images/SOURCES.md`.
 
 ## Deploy
 

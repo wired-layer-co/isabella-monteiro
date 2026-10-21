@@ -37,9 +37,6 @@ jobs:
             package-lock.json
             socialmedia-source/package-lock.json
 
-      - name: Instalar Ghostscript
-        run: sudo apt-get update && sudo apt-get install -y ghostscript
-
       - name: Instalar dependências do portfólio
         run: npm ci --no-audit --no-fund
 

@@ -8,13 +8,11 @@
     "build": "vite build",
     "preview": "vite preview",
     "lint": "eslint .",
-    "pdf": "npm run build",
-    "postbuild": "node scripts/generate-pdf.mjs"
+    "pdf": "vite build && node scripts/generate-pdf.mjs"
   },
   "dependencies": {
     "@fontsource-variable/archivo": "^5.3.0",
     "@fontsource/caveat-brush": "^5.3.0",
-    "@fontsource/poppins": "^5.3.0",
     "@fontsource/road-rage": "^5.3.0",
     "@phosphor-icons/react": "^2.1.10",
     "motion": "^13.4.0",
