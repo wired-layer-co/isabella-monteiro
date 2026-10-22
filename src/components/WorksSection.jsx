@@ -383,6 +383,14 @@ export default function WorksSection({ works }) {
                   <span className="work-card__caption">
                     <span className="work-card__title">{work.title}</span>
                     <span className="work-card__meta">{work.medium}</span>
+                    <span className="work-card__print">
+                      {work.year && <span className="work-card__print-year">{work.year}</span>}
+                      {work.direction && <span><b>Direção:</b> {work.direction}</span>}
+                      {work.script && (
+                        <span><b>{work.category === 'audiovisual' ? 'Roteiro' : 'Texto'}:</b> {work.script}</span>
+                      )}
+                      {work.description && <span>{work.description}</span>}
+                    </span>
                   </span>
                   <span className="work-card__bar" aria-hidden="true">
                     <span className="work-card__bar-default">BORA VER</span>

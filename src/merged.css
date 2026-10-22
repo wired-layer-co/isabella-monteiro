@@ -606,6 +606,8 @@ body.fun-eyes-on * {
   text-transform: uppercase;
 }
 
+.work-card__print { display: none; }
+
 .work-card__bar {
   position: absolute;
   z-index: 3;
@@ -1016,10 +1018,23 @@ body.fun-eyes-on * {
   .works__track,
   .works__track.is-stacked { display: grid !important; width: 100% !important; grid-template-columns: repeat(2, minmax(0, 1fr)) !important; gap: 5mm !important; padding: 0 !important; transform: none !important; }
   .work-card { width: 100% !important; height: auto !important; flex: none !important; border: 1px solid #111 !important; break-inside: avoid !important; page-break-inside: avoid !important; }
-  .work-card__media { flex: none !important; aspect-ratio: 16 / 9 !important; }
-  .work-card__caption { min-height: 0 !important; padding: 3mm !important; }
+  .work-card__media { flex: none !important; aspect-ratio: 2 / 1 !important; }
+  .work-card__caption { min-height: 0 !important; padding: 2.5mm !important; }
   .work-card__title { font-size: 12pt !important; -webkit-line-clamp: unset !important; }
   .work-card__meta { font-size: 7pt !important; }
+  .work-card__print {
+    display: flex !important;
+    flex-direction: column;
+    gap: 1.4mm;
+    margin-top: 2mm;
+    color: #111;
+    font-size: 7.6pt;
+    line-height: 1.32;
+    letter-spacing: 0;
+    text-transform: none;
+  }
+  .work-card__print b { font-weight: 700; }
+  .work-card__print-year { color: #555; }
 
   /* fora de cena */
   .backstage { padding: 8mm 0 !important; break-inside: avoid; page-break-inside: avoid; }
