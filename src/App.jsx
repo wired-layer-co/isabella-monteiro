@@ -1,238 +1,111 @@
-import { useEffect, useRef, useState } from 'react'
+import { useRef, useState } from 'react'
 import {
-  ArrowDown,
   ArrowUpRight,
   CaretLeft,
   CaretRight,
   DownloadSimple,
   FilePdf,
   InstagramLogo,
-  List,
   WhatsappLogo,
-  X,
 } from '@phosphor-icons/react'
-import { motion as Motion, useReducedMotion } from 'motion/react'
+import { about, backstage, filmstrip, hero, profile, works, worksByCategory } from './content'
+import { useMediaQuery } from './components/hooks'
+import Menu from './components/Menu'
+import WorksSection from './components/WorksSection'
+import EyesCursor from './components/EyesCursor'
 
-const works = [
-  {
-    title: 'A Divina Tragicomédia de Dionísio',
-    year: '2024',
-    medium: 'Teatro',
-    direction: 'Vitor Mendes',
-    script: 'Grupo Asas de Papel Produções',
-    location: 'Teatro Municipal Paschoal Carlos Magno',
-    images: ['/images/divina-tragicomedia-4.webp', '/images/divina-tragicomedia-1.webp', '/images/divina-tragicomedia-2.webp', '/images/divina-tragicomedia-3.webp'],
-    alt: 'Isabella Monteiro em cena em A Divina Tragicomédia de Dionísio',
-    tone: 'rose',
-  },
-  {
-    title: 'A História é uma História',
-    year: '2024',
-    medium: 'Teatro',
-    direction: 'Fernando Rodembuch',
-    script: 'Millôr Fernandes',
-    location: 'Teatro Municipal Paschoal Carlos Magno',
-    images: ['/images/historia-3.webp', '/images/historia-1.webp', '/images/historia-2.webp', '/images/historia-4.webp', '/images/historia-5.webp', '/images/historia-6.webp'],
-    alt: 'Elenco de A História é uma História no palco',
-    tone: 'blue',
-  },
-  {
-    title: 'Teicoscopia ou Vaudeville do Horror',
-    year: '2025',
-    medium: 'Teatro',
-    direction: 'João Mauro Cruz',
-    script: 'Criação do grupo',
-    location: 'Teatro Barracão Encena',
-    images: ['/images/teicoscopia-3.webp', '/images/teicoscopia-1.webp', '/images/teicoscopia-2.webp', '/images/teicoscopia-4.webp'],
-    alt: 'Isabella Monteiro em cena em Teicoscopia ou Vaudeville do Horror',
-    tone: 'terracotta',
-    focus: '50% 22%',
-  },
-  {
-    title: 'Elas não Usam Black-Tie',
-    year: '2026',
-    medium: 'Teatro',
-    direction: 'Felipe Renã',
-    script: 'Adaptação de Gianfrancesco Guarnieri',
-    location: 'Teatro Barracão Encena',
-    images: ['/images/black-tie-3.webp', '/images/black-tie-1.webp', '/images/black-tie-2.webp', '/images/black-tie-4.webp', '/images/black-tie-5.webp', '/images/black-tie-6.webp'],
-    alt: 'Elenco de Elas não Usam Black-Tie em cena',
-    tone: 'sage',
-  },
-  {
-    id: 'filme-delirio',
-    title: 'Filme Delírio',
-    year: '2025',
-    medium: 'Audiovisual · longa-metragem',
-    direction: 'Gabriel Eneas',
-    script: 'Gabriel Eneas, Artur Bitencourt e Rafael Avila',
-    images: ['/images/delirio-1.webp', '/images/delirio-2.webp'],
-    alt: 'Isabella Monteiro em cena no filme Delírio',
-    tone: 'ink',
-    fit: 'cinematic',
-    ratio: '728 / 391',
-  },
-  {
-    id: 'ecos',
-    title: 'Ecos',
-    year: '2025',
-    medium: 'Audiovisual',
-    direction: 'Juscelino Zilio',
-    script: 'Criação do grupo',
-    images: ['/images/ecos-1.webp'],
-    alt: 'Isabella Monteiro em cena no filme Ecos',
-    tone: 'pearl',
-    fit: 'cinematic',
-    ratio: '835 / 380',
-  },
+// No site normal os trabalhos vêm depois do "Sobre".
+const MAIN_NAV = [
+  { number: '01', label: 'Início', href: '#inicio' },
+  { number: '02', label: 'Sobre', href: '#sobre' },
+  { number: '03', label: 'Trabalhos', href: '#trabalhos' },
+  { number: '04', label: 'Fora de cena', href: '#fora-de-cena' },
+  { number: '05', label: 'Contato', href: '#contato' },
 ]
 
-const backstage = [
-  'Iluminação em Os Ninguéns (2023)',
-  'Recreação infantil e pintura facial para prefeituras e Sicredi (2023, 2024)',
-  'Auxiliar de coxia no festival de dança Dançando (2023, 2024)',
-  'Iluminação e captura de som para a minissérie Jardim de Eros (2024)',
-  'Sonoplastia no evento Pororoca Cultural para O Método e Estranhas Poesias Celestes (2024)',
-  'Fotografia no evento Conserto pro Arturzinho (2024)',
-]
-
-function BrandMark() {
+function BrandMark({ footer = false, onClick }) {
   return (
-    <a className="brand-mark" href="#inicio" aria-label="Isabella Monteiro, início">
+    <a className={`brand${footer ? ' brand-footer' : ''}`} href="#inicio" onClick={onClick} aria-label="Isabella Monteiro, início">
       <img className="brand-icon" src="/favicon.png?v=2" alt="" aria-hidden="true" />
-      <span className="brand-name">Isabella<br />Monteiro</span>
+      <span className="brand-name">
+        <span>Isabella</span>
+        <span>Monteiro</span>
+      </span>
     </a>
   )
 }
 
-function Header() {
-  const [open, setOpen] = useState(false)
-  const menuButtonRef = useRef(null)
-  const navRef = useRef(null)
-  const wasOpenRef = useRef(false)
-  const close = () => setOpen(false)
-
-  useEffect(() => {
-    const main = document.querySelector('main')
-    const footer = document.querySelector('footer')
-
-    if (!open) {
-      if (wasOpenRef.current) menuButtonRef.current?.focus()
-      wasOpenRef.current = false
-      return undefined
-    }
-
-    wasOpenRef.current = true
-    const previousOverflow = document.body.style.overflow
-    document.body.style.overflow = 'hidden'
-    main?.setAttribute('inert', '')
-    footer?.setAttribute('inert', '')
-
-    const focusFirstLink = window.setTimeout(() => {
-      navRef.current?.querySelector('a')?.focus()
-    }, 80)
-
-    const handleKeyDown = (event) => {
-      if (event.key === 'Escape') {
-        event.preventDefault()
-        close()
-        return
-      }
-
-      if (event.key !== 'Tab') return
-      const focusable = [
-        menuButtonRef.current,
-        ...Array.from(navRef.current?.querySelectorAll('a') ?? []),
-      ].filter(Boolean)
-      const first = focusable[0]
-      const last = focusable.at(-1)
-
-      if (event.shiftKey && document.activeElement === first) {
-        event.preventDefault()
-        last?.focus()
-      } else if (!event.shiftKey && document.activeElement === last) {
-        event.preventDefault()
-        first?.focus()
-      }
-    }
-
-    document.addEventListener('keydown', handleKeyDown)
-    return () => {
-      window.clearTimeout(focusFirstLink)
-      document.removeEventListener('keydown', handleKeyDown)
-      document.body.style.overflow = previousOverflow
-      main?.removeAttribute('inert')
-      footer?.removeAttribute('inert')
-    }
-  }, [open])
-
+function HeroCopy({ desktop = false }) {
   return (
-    <header className="site-header">
-      <BrandMark />
-      <button
-        ref={menuButtonRef}
-        className="menu-button"
-        type="button"
-        aria-expanded={open}
-        aria-controls="primary-navigation"
-        aria-label={open ? 'Fechar menu' : 'Abrir menu'}
-        onClick={() => setOpen((value) => !value)}
-      >
-        {open ? <X size={25} weight="bold" /> : <List size={25} weight="bold" />}
-      </button>
-      <nav
-        ref={navRef}
-        id="primary-navigation"
-        className={open ? 'site-nav is-open' : 'site-nav'}
-        aria-label="Navegação principal"
-      >
-        <a href="#trabalhos" onClick={close}>Trabalhos</a>
-        <a href="#inicio" onClick={close}>Início</a>
-        <a href="#sobre" onClick={close}>Sobre</a>
-        <a href="#contato" onClick={close}>Contato</a>
-      </nav>
-    </header>
+    <div className="hero-copy">
+      <p className="eyebrow">Atriz</p>
+      <h1>Isabella<br />Monteiro</h1>
+      <p className="hero-brush" aria-label="Portfólio">
+        <span aria-hidden="true">*</span>Portfolio<span aria-hidden="true">*</span>
+      </p>
+      {desktop && (
+        <ul className="hero-facts">
+          <li>Curitiba · Brasil</li>
+          <li>Teatro &amp; audiovisual</li>
+        </ul>
+      )}
+    </div>
   )
 }
 
-function Hero() {
-  const reduceMotion = useReducedMotion()
-  const rise = (delay = 0) => ({
-    initial: reduceMotion ? false : { opacity: 0, y: 26 },
-    animate: { opacity: 1, y: 0 },
-    transition: { duration: 0.72, delay, ease: [0.16, 1, 0.3, 1] },
-  })
+function Hero({ desktop }) {
+  // Mobile: primeira tela branca, 3 fotos e o retrato verde logo abaixo (aprovado).
+  if (!desktop) {
+    return (
+      <section className="hero" id="inicio">
+        <div className="hero-top">
+          <HeroCopy />
 
+          <div className="hero-strip" aria-label="Retratos de Isabella Monteiro">
+            {hero.strip.map((image) => (
+              <figure key={image.src}>
+                <img src={image.src} alt={image.alt} fetchPriority="high" />
+              </figure>
+            ))}
+          </div>
+        </div>
+
+        <figure className="hero-portrait">
+          <div className="hero-portrait-inner">
+            <img src={hero.portrait} alt="Retrato de Isabella Monteiro em fundo terracota" fetchPriority="high" />
+            <figcaption aria-hidden="true">Atriz</figcaption>
+          </div>
+        </figure>
+      </section>
+    )
+  }
+
+  // Desktop: capa editorial — nome + retrato verde inteiro à direita
+  // e a régua de retratos (a mesma do mobile) correndo de ponta a ponta.
   return (
-    <section className="hero" id="inicio">
-      <div className="hero-copy">
-        <Motion.h1 {...rise(0.05)}>
-          <span className="hero-role">Atriz</span>
-          <span>Isabella</span>
-          <span>Monteiro</span>
-        </Motion.h1>
-        <Motion.p className="hero-brush" {...rise(0.13)}>
-          <span aria-hidden="true">*</span>PORTFOLIO<span aria-hidden="true">*</span>
-        </Motion.p>
-        <Motion.div className="hero-details" {...rise(0.22)}>
-          <p className="hero-year">2026</p>
-          <p>Atriz de teatro e audiovisual em Curitiba. Presença de palco, escuta e trabalho construído entre o Paraná e o Rio Grande do Sul.</p>
-          <a href="#trabalhos">Ver trabalhos <ArrowDown size={18} weight="bold" /></a>
-        </Motion.div>
+    <section className="hero hero--desktop" id="inicio">
+      <div className="hero-stage">
+        <HeroCopy desktop />
+
+        <figure className="hero-portrait">
+          <div className="hero-portrait-inner">
+            <img src={hero.portrait} alt="Retrato de Isabella Monteiro em fundo terracota" fetchPriority="high" />
+            <figcaption aria-hidden="true">Atriz</figcaption>
+          </div>
+        </figure>
       </div>
 
-      <Motion.div className="hero-collage" {...rise(0.18)} aria-label="Retratos e cena de Isabella Monteiro">
-        <span className="hero-color-sheet" aria-hidden="true" />
-        <figure className="hero-portrait-main">
-          <img src="/images/isabella-retrato-principal.webp" alt="Retrato de Isabella Monteiro usando jaqueta preta" fetchPriority="high" />
-        </figure>
-        <figure className="hero-portrait-side">
-          <img src="/images/isabella-retrato-perfil.webp" alt="Retrato de perfil de Isabella Monteiro" />
-        </figure>
-        <figure className="hero-scene">
-          <img src="/images/black-tie-3.webp" alt="Isabella Monteiro no palco em Elas não Usam Black-Tie" />
-        </figure>
-      </Motion.div>
+      <div className="hero-reel-head" aria-hidden="true">
+        <span>Retratos · estúdio</span>
+        <span>01 — 10</span>
+      </div>
+      <div className="hero-reel" aria-hidden="true">
+        {filmstrip.map((image, index) => (
+          <figure key={image.src}>
+            <img src={image.src} alt="" loading={index < 4 ? 'eager' : 'lazy'} />
+          </figure>
+        ))}
+      </div>
     </section>
   )
 }
@@ -240,36 +113,65 @@ function Hero() {
 function About() {
   return (
     <section className="about" id="sobre">
-      <div className="about-image">
-        <span className="about-block" aria-hidden="true" />
-        <img src="/images/isabella-retrato-frente.webp" alt="Retrato de Isabella Monteiro" loading="eager" />
-        <strong aria-hidden="true">ATRIZ</strong>
+      <h2>Sobre mim</h2>
+      <div className="about-body">
+        <div className="about-copy">
+          {about.paragraphs.map((paragraph) => <p key={paragraph}>{paragraph}</p>)}
+        </div>
+        <figure className="about-portrait">
+          <img
+            className="about-portrait__base"
+            src={about.image}
+            alt="Retrato de Isabella Monteiro em fundo verde"
+            loading="eager"
+          />
+          <img
+            className="about-portrait__reveal"
+            src={about.reveal}
+            alt=""
+            aria-hidden="true"
+            loading="eager"
+          />
+        </figure>
       </div>
-      <div className="about-copy">
-        <h2>Sobre mim</h2>
-        <p>
-          Atriz curitibana, Isabella iniciou sua carreira no Rio Grande do Sul em 2022, no teatro Paranóia Produções. Em 2023, integrou a companhia Asas de Papel, ampliando sua atuação para festivais, novas montagens e conteúdos audiovisuais.
-        </p>
-        <p>
-          De volta a Curitiba em 2025, ingressou no Barracão Encena, onde cursa Teatro e TV com conclusão prevista para 2027. Também atua em curtas e filmes realizados por alunos da PUCPR.
-        </p>
-        <dl className="casting-data" aria-label="Dados físicos">
-          <div><dt>Altura</dt><dd>1,58 m</dd></div>
-          <div><dt>Peso</dt><dd>60 kg</dd></div>
-          <div><dt>Manequim</dt><dd>M</dd></div>
-          <div><dt>Calçado</dt><dd>36</dd></div>
-        </dl>
+      <dl className="casting">
+        {about.casting.map(([label, value]) => (
+          <div key={label}>
+            <dt>{label}</dt>
+            <dd>{value}</dd>
+          </div>
+        ))}
+      </dl>
+    </section>
+  )
+}
+
+function WorksIntro() {
+  return (
+    <section className="works-intro" id="trabalhos">
+      <h2 className="brush">Trabalhos</h2>
+      <div className="works-links">
+        <a className="pill" href="#audiovisual" aria-label="Ver trabalhos audiovisuais">
+          <img src="/images/pill-audiovisual.png" alt="" loading="lazy" />
+        </a>
+        <a className="pill" href="#teatro" aria-label="Ver trabalhos de teatro">
+          <img src="/images/pill-teatro.png" alt="" loading="lazy" />
+        </a>
+      </div>
+      <div className="filmstrip" aria-hidden="true">
+        {filmstrip.map((image) => (
+          <img key={image.src} src={image.src} alt="" loading="eager" />
+        ))}
       </div>
     </section>
   )
 }
 
-function WorkCard({ work, index }) {
-  const reduceMotion = useReducedMotion()
+function Carousel({ work }) {
   const [photo, setPhoto] = useState(0)
   const [offset, setOffset] = useState(0)
   const [dragging, setDragging] = useState(false)
-  const drag = useRef({ active: false, startX: 0 })
+  const drag = useRef({ active: false, startX: 0, startY: 0 })
   const count = work.images.length
 
   const show = (next) => setPhoto((next + count) % count)
@@ -281,6 +183,8 @@ function WorkCard({ work, index }) {
   }
 
   const startDrag = (event) => {
+    if (count < 2) return
+    if (event.target.closest?.('.work-controls')) return
     if (event.pointerType === 'mouse' && event.button !== 0) return
     drag.current = { active: true, startX: event.clientX, startY: event.clientY }
     setDragging(true)
@@ -317,98 +221,99 @@ function WorkCard({ work, index }) {
     }
   }
 
+  const [ratioWidth, ratioHeight] = work.ratio ? work.ratio.split('/').map(Number) : []
+  const portraitFrame = Boolean(ratioWidth && ratioHeight && ratioWidth < ratioHeight)
+
   return (
-    <Motion.article
-      className={`work-card tone-${work.tone}${work.fit ? ` is-${work.fit}` : ''}`}
-      id={work.id}
-      style={{ ...(work.ratio && { '--still-ratio': work.ratio }), ...(work.focus && { '--focus': work.focus }) }}
-      initial={reduceMotion ? false : { opacity: 0.96, y: 24 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, amount: 0.18 }}
-      aria-label={`${work.title}, ${work.year}`}
+    <div
+      className={`work-gallery is-${work.category}${portraitFrame ? ' is-portrait' : ''}`}
+      style={work.ratio ? { aspectRatio: work.ratio } : undefined}
+      role="group"
+      aria-label={`Fotos de ${work.title}`}
+      tabIndex={count > 1 ? 0 : undefined}
+      onKeyDown={count > 1 ? handleKeys : undefined}
+      onPointerDown={startDrag}
+      onPointerMove={moveDrag}
+      onPointerUp={endDrag}
+      onPointerCancel={endDrag}
     >
-      <div className="work-copy">
-        <p className="work-kind">{work.medium}</p>
-        <h3>{work.title}</h3>
-        <p className="work-year">{work.year}</p>
-        <dl>
-          <div><dt>Direção</dt><dd>{work.direction}</dd></div>
-          <div><dt>Texto</dt><dd>{work.script}</dd></div>
-          {work.location && <div><dt>Local</dt><dd>{work.location}</dd></div>}
-        </dl>
-      </div>
-      <div className="work-media" onKeyDown={count > 1 ? handleKeys : undefined}>
-        <div
-          className={dragging ? 'work-carousel is-grabbing' : 'work-carousel'}
-          role="group"
-          aria-label={`Fotos de ${work.title}`}
-          onPointerDown={count > 1 ? startDrag : undefined}
-          onPointerMove={count > 1 ? moveDrag : undefined}
-          onPointerUp={count > 1 ? endDrag : undefined}
-          onPointerCancel={count > 1 ? endDrag : undefined}
-        >
-          <div
-            className={dragging ? 'work-track is-dragging' : 'work-track'}
-            style={{ transform: `translateX(calc(${-photo * 100}% + ${offset}px))` }}
-          >
-            {work.images.map((source, slide) => (
-              <div className="work-slide" key={source} aria-hidden={slide !== photo}>
-                <img
-                  className="work-image"
-                  src={source}
-                  alt={slide === 0 ? work.alt : `${work.alt}, segundo momento`}
-                  loading={slide === 0 && index > 1 ? 'lazy' : 'eager'}
-                  draggable="false"
-                />
-              </div>
-            ))}
+      <div
+        className={`work-track${dragging ? ' is-dragging' : ''}`}
+        style={{ transform: `translateX(calc(${-photo * 100}% + ${offset}px))` }}
+      >
+        {work.images.map((source, index) => (
+          <div className="work-slide" key={source} aria-hidden={index !== photo}>
+            <img
+              src={source}
+              alt={index === 0 ? work.alt : `${work.alt}, outro momento`}
+              loading={index === 0 ? 'eager' : 'lazy'}
+              draggable="false"
+            />
           </div>
-        </div>
-        {count > 1 && <div className="work-nav">
-          <span className="work-counter" aria-live="polite">
-            <span key={photo}>{`0${photo + 1}/0${count}`}</span>
-          </span>
-          <button type="button" onClick={() => show(photo - 1)} aria-label={`Foto anterior de ${work.title}`}>
-            <CaretLeft size={20} weight="bold" />
-          </button>
-          <button type="button" onClick={() => show(photo + 1)} aria-label={`Próxima foto de ${work.title}`}>
-            <CaretRight size={20} weight="bold" />
-          </button>
-        </div>}
-        <span className="work-mark" aria-hidden="true">*</span>
+        ))}
       </div>
-    </Motion.article>
+
+      {count > 1 && (
+        <>
+          <div className="work-shade" aria-hidden="true" />
+          <div className="work-controls">
+            <span className="work-counter" aria-live="polite">
+              {String(photo + 1).padStart(2, '0')}/{String(count).padStart(2, '0')}
+            </span>
+            <button type="button" onClick={() => show(photo - 1)} aria-label={`Foto anterior de ${work.title}`}>
+              <CaretLeft size={24} weight="bold" />
+            </button>
+            <button type="button" onClick={() => show(photo + 1)} aria-label={`Próxima foto de ${work.title}`}>
+              <CaretRight size={24} weight="bold" />
+            </button>
+          </div>
+        </>
+      )}
+    </div>
   )
 }
 
-function Work() {
+function Project({ work }) {
   return (
-    <section className="work" id="trabalhos">
-      <div className="work-heading">
-        <h2>TRABALHOS</h2>
-        <p>Teatro e audiovisual. Arraste, clique ou use as setas para ver outros momentos de cada obra.</p>
-      </div>
-      <div className="work-list">
-        {works.map((work, index) => <WorkCard key={work.title} work={work} index={index} />)}
-      </div>
+    <article className="project">
+      <header className="project-copy">
+        <h3>{work.title}</h3>
+        {(work.year || work.medium) && <p className="project-year">{work.year || work.medium}</p>}
+        {(work.direction || work.script) && (
+          <dl className="project-credits">
+            {work.direction && <div><dt>Direção</dt><dd>{work.direction}</dd></div>}
+            {work.script && <div><dt>{work.category === 'audiovisual' ? 'Roteiro' : 'Texto'}</dt><dd>{work.script}</dd></div>}
+          </dl>
+        )}
+        {work.description && <p className="project-description">{work.description}</p>}
+      </header>
+      <Carousel work={work} />
+    </article>
+  )
+}
+
+function Category({ id, title, works }) {
+  return (
+    <section className={`category category-${id}`} id={id}>
+      <h2 className="brush category-title">{title}</h2>
+      {works.map((work) => <Project key={work.id} work={work} />)}
     </section>
   )
 }
 
-function Trajectory() {
+function Backstage() {
   return (
-    <section className="trajectory" id="trajetoria">
-      <div className="trajectory-heading">
-        <h2>FORA<br />DE CENA</h2>
-        <p>Produção, técnica e bastidores também formam o olhar de Isabella sobre cada trabalho.</p>
+    <section className="backstage" id="fora-de-cena">
+      <div className="backstage-grid">
+        <h2 className="brush backstage-title"><span aria-hidden="true">*</span>Fora de cena<span aria-hidden="true">*</span></h2>
+        <p className="backstage-intro">{backstage.intro}</p>
+        <ul className="backstage-list">
+          {backstage.items.map((item) => <li key={item}>{item}</li>)}
+        </ul>
+        <figure className="backstage-photo">
+          <img src={backstage.image} alt={backstage.imageAlt} loading="eager" />
+        </figure>
       </div>
-      <div className="backstage-collage" aria-label="Bastidores de produções audiovisuais">
-        <img src="/images/bastidores-aquela-cancao.webp" alt="Isabella Monteiro trabalhando em uma produção audiovisual" loading="lazy" />
-        <img src="/images/bastidores-fotografia.webp" alt="Isabella Monteiro fotografando em evento teatral" loading="lazy" />
-      </div>
-      <ul className="backstage-list">
-        {backstage.map((item) => <li key={item}>{item}</li>)}
-      </ul>
     </section>
   )
 }
@@ -416,25 +321,22 @@ function Trajectory() {
 function Contact() {
   return (
     <section className="contact" id="contato">
-      <div className="contact-title">
-        <p>Para publicidades, teatro e audiovisual.</p>
-        <h2>CONTATO</h2>
-      </div>
-      <div className="contact-links">
-        <a href="https://wa.me/5541995027607" target="_blank" rel="noreferrer">
-          <WhatsappLogo size={30} weight="regular" />
-          <span><small>WhatsApp</small>41 99502-7607</span>
-          <ArrowUpRight size={22} weight="bold" />
+      <h2 className="brush">Contato</h2>
+      <div className="contact-panel">
+        <a href={profile.whatsappUrl} target="_blank" rel="noreferrer">
+          <WhatsappLogo size={32} weight="regular" aria-hidden="true" />
+          <span><small>WhatsApp</small>{profile.whatsapp}</span>
+          <ArrowUpRight size={26} weight="bold" aria-hidden="true" />
         </a>
-        <a href="https://instagram.com/isamontwiro" target="_blank" rel="noreferrer">
-          <InstagramLogo size={30} weight="regular" />
-          <span><small>Instagram</small>@isamontwiro</span>
-          <ArrowUpRight size={22} weight="bold" />
+        <a href={profile.instagramUrl} target="_blank" rel="noreferrer">
+          <InstagramLogo size={32} weight="regular" aria-hidden="true" />
+          <span><small>Instagram</small>{profile.instagram}</span>
+          <ArrowUpRight size={26} weight="bold" aria-hidden="true" />
         </a>
-        <a className="contact-download" href="/portfolio-isabella-monteiro.pdf" download>
-          <FilePdf size={30} weight="regular" />
+        <a href={profile.pdfUrl} download>
+          <FilePdf size={32} weight="regular" aria-hidden="true" />
           <span><small>Portfólio</small>Baixar em PDF</span>
-          <DownloadSimple size={22} weight="bold" />
+          <DownloadSimple size={26} weight="bold" aria-hidden="true" />
         </a>
       </div>
     </section>
@@ -446,32 +348,42 @@ function Footer() {
 
   return (
     <footer className="site-footer">
-      <div className="site-footer-row">
-        <BrandMark />
-        <p>Portfólio de atriz / {year}</p>
-        <a href="#inicio">Voltar ao início</a>
-      </div>
-      <div className="site-credit">
-        Desenvolvido por{' '}
-        <a href="https://portfolio.wired.rs/creative" target="_blank" rel="noreferrer">wired layer co.</a>
+      <BrandMark footer />
+      <p>Portfólio de atriz / {year}</p>
+      <a className="back-to-top" href="#inicio">Voltar ao início</a>
+      <div className="footer-credit">
+        Desenvolvido por <a href="https://portfolio.wired.rs/creative" target="_blank" rel="noreferrer">wired layer co.</a>
       </div>
     </footer>
   )
 }
 
 export default function App() {
+  // Desktop: menu com cortina + trabalhos com scroll horizontal + cursor de olho.
+  // Mobile: layout próprio (primeira tela branca, categorias + carrossel).
+  const isDesktop = useMediaQuery('(min-width: 900px)')
+
   return (
     <>
       <a className="skip-link" href="#conteudo">Pular para o conteúdo</a>
-      <Header />
+      <Menu profile={profile} items={MAIN_NAV} />
       <main id="conteudo">
-        <Hero />
+        <Hero desktop={isDesktop} />
         <About />
-        <Work />
-        <Trajectory />
+        {isDesktop ? (
+          <WorksSection works={works} />
+        ) : (
+          <>
+            <WorksIntro />
+            <Category id="audiovisual" title="Audiovisual" works={worksByCategory.audiovisual} />
+            <Category id="teatro" title="Teatro" works={worksByCategory.teatro} />
+          </>
+        )}
+        <Backstage />
         <Contact />
       </main>
       <Footer />
+      <EyesCursor active={isDesktop} />
     </>
   )
 }

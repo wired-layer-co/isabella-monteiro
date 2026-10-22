@@ -45,7 +45,9 @@ O visitante chega por indicação, Instagram ou link direto, examina retratos e 
 ## Evidence on Hand
 
 - Briefing DOCX com biografia, dados físicos, trabalhos e contatos.
-- Portfólio anterior em PDF com retratos, fotos de cena e créditos.
+- Portfólio anterior em PDF e desenho novo feito pela cliente no Canva (`SITE PORTFOLIO.pdf` e PNGs), usado como fonte visual do layout.
+- Pacote de imagens de 21/10/2026 com 11 retratos de estúdio e 5 stills de “Quem Me Derá Ser Amada”.
+- Portfólio do site em PDF A4, regenerado automaticamente no build a partir da própria página.
 - Três referências Pinterest locais, explicitamente aprovadas pelo usuário.
 - Não há depoimentos, premiações ou showreel fornecidos.
 

@@ -24,7 +24,12 @@ const chromeCandidates = [
   '/usr/bin/google-chrome',
 ].filter(Boolean)
 
-const chrome = chromeCandidates.find((candidate) => existsSync(candidate)) ?? 'chromium'
+const chrome = chromeCandidates.find((candidate) => existsSync(candidate))
+
+if (!chrome) {
+  console.warn('Chrome/Chromium nao encontrado; o PDF existente em public/portfolio-isabella-monteiro.pdf foi preservado.')
+  process.exit(0)
+}
 
 const contentTypes = {
   '.css': 'text/css',
@@ -68,6 +73,9 @@ const port = await new Promise((resolvePort) => {
 
 const url = `http://127.0.0.1:${port}/`
 
+const rawOutput = `${output}.raw.pdf`
+const distCopy = join(dist, 'portfolio-isabella-monteiro.pdf')
+
 const args = [
   '--headless=new',
   '--disable-gpu',
@@ -76,7 +84,7 @@ const args = [
   '--run-all-compositor-stages-before-draw',
   '--virtual-time-budget=20000',
   '--no-pdf-header-footer',
-  `--print-to-pdf=${output}`,
+  `--print-to-pdf=${rawOutput}`,
   url,
 ]
 
@@ -84,12 +92,15 @@ const rawCode = await run(chrome, args)
 
 server.close()
 
-if (rawCode !== 0 || !existsSync(output)) {
-  console.error(`Falha ao gerar o PDF com ${chrome}.`)
-  process.exit(1)
+if (rawCode !== 0 || !existsSync(rawOutput)) {
+  rmSync(rawOutput, { force: true })
+  console.warn('Falha ao gerar o PDF com o Chrome; o PDF existente foi preservado.')
+  if (existsSync(output) && existsSync(dist)) copyFileSync(output, distCopy)
+  process.exit(0)
 }
 
-const rawSize = statSync(output).size
+const rawSize = statSync(rawOutput).size
+const previousSize = existsSync(output) ? statSync(output).size : 0
 
 const optimized = await run('gs', [
   '-q',
@@ -111,22 +122,32 @@ const optimized = await run('gs', [
   '-dDownsampleMonoImages=true',
   '-dMonoImageResolution=300',
   `-sOutputFile=${output}.tmp`,
-  output,
+  rawOutput,
 ])
 
-let optimizedNote = ''
+let optimizedNote = ' · bruto'
+let useOptimized = false
 
 if (existsSync(`${output}.tmp`)) {
   const tmpSize = statSync(`${output}.tmp`).size
   if (optimized === 0 && tmpSize > 0 && tmpSize < rawSize) {
     renameSync(`${output}.tmp`, output)
+    useOptimized = true
     optimizedNote = ' · otimizado'
   } else {
     rmSync(`${output}.tmp`)
   }
 }
 
-const distCopy = join(dist, 'portfolio-isabella-monteiro.pdf')
+if (!useOptimized) {
+  if (previousSize > 0 && previousSize < rawSize) {
+    optimizedNote = ' · PDF anterior preservado (Ghostscript indisponível)'
+  } else {
+    renameSync(rawOutput, output)
+  }
+}
+
+rmSync(rawOutput, { force: true })
 if (existsSync(dist)) copyFileSync(output, distCopy)
 
 const { size } = statSync(output)
