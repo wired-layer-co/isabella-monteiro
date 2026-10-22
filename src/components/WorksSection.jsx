@@ -93,7 +93,7 @@ function ProjectDialog({ work, onRequestClose }) {
       >
       <div className="project-dialog__panel">
         <button className="project-dialog__close" type="button" onClick={onRequestClose} ref={closeRef}>
-          Fechar <span aria-hidden="true">✕</span>
+          Fechar <span aria-hidden="true">{'✕\uFE0E'}</span>
         </button>
 
         <div className="project-dialog__media">
@@ -105,11 +105,11 @@ function ProjectDialog({ work, onRequestClose }) {
           {total > 1 && (
             <div className="project-dialog__media-controls">
               <button type="button" onClick={() => showPhoto(photo - 1)} aria-label={`Foto anterior de ${work.title}`}>
-                ←
+                {'←\uFE0E'}
               </button>
               <span aria-live="polite">{String(photo + 1).padStart(2, '0')} / {String(total).padStart(2, '0')}</span>
               <button type="button" onClick={() => showPhoto(photo + 1)} aria-label={`Próxima foto de ${work.title}`}>
-                →
+                {'→\uFE0E'}
               </button>
             </div>
           )}
@@ -159,7 +159,7 @@ function ProjectDialog({ work, onRequestClose }) {
             </div>
           )}
 
-          <p className="project-dialog__hint">Use ← → para passar as fotos · ESC para fechar</p>
+          <p className="project-dialog__hint">{'Use ←\uFE0E →\uFE0E para passar as fotos · ESC para fechar'}</p>
         </div>
       </div>
       </div>
@@ -302,7 +302,7 @@ export default function WorksSection({ works }) {
         <header className="works__head">
           <p className="section-label">02 / TRABALHOS</p>
           <h2 id="works-title" className="brush-title">Trabalhos <sup>{String(visibleWorks.length).padStart(2, '0')}</sup></h2>
-          <p className="works__hint">{pinned ? 'SCROLL PARA O LADO · SETAS ← →' : 'TOQUE PARA ABRIR'}</p>
+          <p className="works__hint">{pinned ? 'SCROLL PARA O LADO · SETAS ←\uFE0E →\uFE0E' : 'TOQUE PARA ABRIR'}</p>
           <div className="works__filter" role="tablist" aria-label="Filtrar trabalhos">
             {FILTERS.map((option) => (
               <button
@@ -359,7 +359,7 @@ export default function WorksSection({ works }) {
                   <span className="work-card__bar" aria-hidden="true">
                     <span className="work-card__bar-default">VER O PROJETO</span>
                     <span className="work-card__bar-hover">BORA VER</span>
-                    <span>↗</span>
+                    <span>{'↗\uFE0E'}</span>
                   </span>
                 </button>
               )

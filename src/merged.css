@@ -899,3 +899,19 @@ body.fun-eyes-on * {
 @media (min-width: 900px) and (max-width: 1100px) {
   .project-dialog__panel { grid-template-columns: minmax(0, 1fr) minmax(300px, 0.9fr); }
 }
+
+/* Zoom de 150%: menu, títulos de card e diálogo no tamanho físico do desktop 100%. */
+@media screen and (min-width: 900px) and (max-width: 1536px) {
+  .curtain__link { font-size: clamp(3.3rem, calc(2.156vw + 32.1px), 5.6rem); }
+
+  .work-card__bar { height: 46px; }
+  .work-card__title { font-size: clamp(1.26rem, calc(1.36vw + 7.1px), 2.3rem); }
+
+  .project-dialog__copy h2 { font-size: clamp(2.52rem, calc(2.06vw + 20.5px), 4.4rem); }
+
+  /* capa de Trabalhos: mantém o pé dos cards visível em 125–150% */
+  .works.is-pinned .works__pin { padding-top: 12px; }
+  .works__head h2 { font-size: clamp(3.2rem, calc(11.34vw - 57.7px), 8.2rem); }
+  .work-card { height: min(64svh, 640px); }
+  .work-card__caption { min-height: 142px; padding-bottom: 52px; }
+}

@@ -148,7 +148,7 @@ export default function Menu({ profile, items = NAV_ITEMS }) {
             >
               <span className="curtain__number">{item.number}</span>
               <span className="curtain__label">{item.label}</span>
-              <span className="curtain__arrow" aria-hidden="true">↗</span>
+              <span className="curtain__arrow" aria-hidden="true">{'↗\uFE0E'}</span>
             </a>
           ))}
         </nav>

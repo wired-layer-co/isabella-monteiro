@@ -493,10 +493,12 @@ main { padding-top: var(--header-height); }
   align-items: start;
 }
 
+/* Abaixo de 1440px o texto corrido encolhe mais rápido que o vw:
+   em ~1280px (1920 com zoom de 150%) mantém o tamanho físico do desktop. */
 .about-copy p {
   max-width: 60ch;
   margin: 0;
-  font-size: clamp(1.05rem, 1.9vw, 1.6rem);
+  font-size: clamp(1.05rem, calc(4.2vw - 36.5px), 1.5rem);
   font-weight: 400;
   line-height: 1.52;
 }
@@ -557,7 +559,7 @@ main { padding-top: var(--header-height); }
 }
 .casting dd {
   margin: 0;
-  font-size: clamp(1.15rem, 1.9vw, 1.8rem);
+  font-size: clamp(1.1rem, calc(5.5vw - 50.4px), 1.8rem);
   font-weight: 700;
   letter-spacing: -0.025em;
   line-height: 1;
@@ -827,7 +829,7 @@ main { padding-top: var(--header-height); }
   grid-row: 2;
   max-width: 34rem;
   margin: 0;
-  font-size: clamp(1.05rem, 1.7vw, 1.45rem);
+  font-size: clamp(1rem, calc(3.5625vw - 28.1px), 1.45rem);
   line-height: 1.5;
 }
 
@@ -919,7 +921,7 @@ main { padding-top: var(--header-height); }
 .contact-panel a > span {
   display: grid;
   gap: 3px;
-  font-size: clamp(1.05rem, 2vw, 1.8rem);
+  font-size: clamp(1.15rem, calc(4.875vw - 41.4px), 1.8rem);
   font-weight: 700;
   letter-spacing: -0.02em;
   line-height: 1.1;
@@ -965,7 +967,7 @@ main { padding-top: var(--header-height); }
 .site-footer > p,
 .back-to-top {
   margin: 0;
-  font-size: clamp(0.9rem, 1.5vw, 1.3rem);
+  font-size: clamp(0.9rem, calc(3.3125vw - 26.9px), 1.3rem);
   font-weight: 700;
   letter-spacing: 0.01em;
   line-height: 1.2;
@@ -1001,7 +1003,7 @@ main { padding-top: var(--header-height); }
   .menu-button { width: 44px; height: 44px; }
 
   .hero { display: block; min-height: 0; gap: 0; padding-bottom: 0; }
-  .hero-top { display: flex; min-height: calc(100vh - var(--header-height)); min-height: calc(100svh - var(--header-height)); flex-direction: column; }
+  .hero-top { display: flex; min-height: 0; flex-direction: column; }
   .hero-copy { padding-top: 30px; }
   .hero h1 { font-size: clamp(2.2rem, 8.5vw, 2.8rem); }
   .hero-brush { margin-top: clamp(62px, 17vw, 92px); font-size: clamp(3.2rem, 15.5vw, 5rem); }
@@ -1072,6 +1074,53 @@ main { padding-top: var(--header-height); }
   .hero-brush { font-size: clamp(2.9rem, 15.5vw, 5rem); }
   .pill { width: auto; flex: 1 1 0; }
   .contact-panel a { grid-template-columns: auto minmax(0, 1fr) 18px; }
+}
+
+/* Zoom de 150% (ex.: 1920×1080 → viewport ~1280; 1440×900 → ~960):
+   compacta a capa e o Sobre para os rótulos caberem e o texto ter mais linhas.
+   Em 100% (1440/1920) nada muda. */
+@media screen and (min-width: 900px) and (max-width: 1536px) {
+  .hero-stage {
+    padding-top: clamp(16px, 2.2vh, 24px);
+    grid-template-columns: minmax(0, 1fr) min(28vw, 440px);
+    gap: clamp(24px, 3.4vw, 52px);
+  }
+
+  .hero-reel-head { margin-top: 16px; }
+
+  .about h2,
+  .about-body,
+  .casting { max-width: 1100px; }
+
+  .about-body { gap: clamp(26px, 3vw, 44px); }
+
+  .about-portrait { max-width: 386px; }
+
+  .about-copy p {
+    max-width: 42ch;
+    font-size: clamp(1.02rem, calc(3.875vw - 32.3px), 1.48rem);
+  }
+
+  :root { --header-height: 80px; }
+
+  .site-header { padding-block: clamp(10px, 1.6vw, 18px); }
+  .brand-icon { width: clamp(36px, 4.4vw, 48px); }
+  .brand-name { font-size: clamp(1.05rem, 1.8vw, 1.5rem); }
+  .menu-button { width: 44px; height: 44px; }
+
+  .brand-footer .brand-icon { width: clamp(38px, 4.6vw, 50px); }
+  .brand-footer .brand-name { font-size: clamp(1.2rem, 2vw, 1.7rem); }
+
+  /* Títulos de display: no zoom eles ficam no tamanho físico do desktop 100%. */
+  .hero--desktop h1 { font-size: clamp(3.72rem, calc(2.8vw + 32.3px), 6.4rem); }
+  .hero--desktop .hero-brush { font-size: clamp(4.56rem, calc(5.875vw + 16.6px), 8.6rem); }
+  .about h2 { font-size: clamp(2.76rem, calc(0.19vw + 42.4px), 4.2rem); }
+  .backstage-title { font-size: clamp(4.4rem, 70.4px, 6.6rem); }
+  .contact h2 { font-size: clamp(5rem, 81px, 7.6rem); }
+  .eyebrow { font-size: 0.7rem; }
+
+  .contact-panel a { min-height: clamp(84px, 9.5vw, 112px); padding: clamp(16px, 2vw, 24px) clamp(20px, 4vw, 48px); }
+  .backstage-list li { padding: 15px 0; }
 }
 
 @media (prefers-reduced-motion: reduce) {

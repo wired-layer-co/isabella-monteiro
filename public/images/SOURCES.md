@@ -16,7 +16,7 @@ Fonte: `PORTFOLIO DE ATRIZ-20261021T165337Z-1-001.zip`, entregue em 21/10/2026.
 - `isa-strip-walking.webp`: `ISA MONTEIRO SERVING CUNT/IMG_4458.jpg`.
 - `isa-hero-green.webp`: `ISA MONTEIRO SERVING CUNT/IMG_5056 (1).jpg`, recortado para o retrato principal.
 - `isa-about-terracotta.webp`: `ISA MONTEIRO SERVING CUNT/IMG_5054 (1).jpg`.
-- `isa-thumb-01.webp` a `isa-thumb-10.webp`: miniaturas de `IMG_4193`, `IMG_4458`, `IMG_4496`, `IMG_4659`, `IMG_4707`, `IMG_4735`, `IMG_4761`, `IMG_4779`, `IMG_4193` e `IMG_4496`.
+- `isa-thumb-01.webp` a `isa-thumb-10.webp`: miniaturas de `IMG_4193`, `IMG_4458`, `IMG_4496`, `IMG_4659`, `IMG_4707`, `IMG_4735`, `IMG_4761`, `IMG_4779`, `IMG_4193` e `IMG_4496`, reescaladas para 1080×1620 a partir do pacote `ISA MONTEIRO SERVING CUNT-20261022T135656Z-1-001.zip`.
 - `quem-me-dera-01.webp` a `quem-me-dera-05.webp`: stills de `AUDIOVISUAL/QUEM ME DERÁ SER AMADA/*.jpeg`.
 
 As fotos foram convertidas para WebP com orientação corrigida, lado maior de até 1800 px, qualidade ~82 e metadados de câmera removidos.

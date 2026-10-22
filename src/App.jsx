@@ -60,14 +60,6 @@ function Hero({ desktop }) {
       <section className="hero" id="inicio">
         <div className="hero-top">
           <HeroCopy />
-
-          <div className="hero-strip" aria-label="Retratos de Isabella Monteiro">
-            {hero.strip.map((image) => (
-              <figure key={image.src}>
-                <img src={image.src} alt={image.alt} fetchPriority="high" />
-              </figure>
-            ))}
-          </div>
         </div>
 
         <figure className="hero-portrait">
