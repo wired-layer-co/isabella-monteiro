@@ -45,6 +45,28 @@ function ProjectDialog({ work, onRequestClose }) {
     setPhoto((next + total) % total)
   }
 
+  const swipe = useRef({ active: false, x: 0, y: 0 })
+  const [dragging, setDragging] = useState(false)
+
+  const startSwipe = (event) => {
+    if (total < 2) return
+    if (event.target.closest?.('.project-dialog__media-controls')) return
+    if (event.pointerType === 'mouse' && event.button !== 0) return
+    swipe.current = { active: true, x: event.clientX, y: event.clientY }
+    setDragging(true)
+    event.currentTarget.setPointerCapture?.(event.pointerId)
+  }
+
+  const endSwipe = (event) => {
+    if (!swipe.current.active) return
+    const horizontal = event.clientX - swipe.current.x
+    const vertical = event.clientY - swipe.current.y
+    swipe.current.active = false
+    setDragging(false)
+    if (Math.abs(horizontal) < 40 || Math.abs(horizontal) <= Math.abs(vertical)) return
+    showPhoto(horizontal < 0 ? photo + 1 : photo - 1)
+  }
+
   const onKeyDown = (event) => {
     if (event.key === 'Escape') {
       event.preventDefault()
@@ -96,11 +118,17 @@ function ProjectDialog({ work, onRequestClose }) {
           Fechar <span aria-hidden="true">{'✕\uFE0E'}</span>
         </button>
 
-        <div className="project-dialog__media">
+        <div
+          className={`project-dialog__media${dragging ? ' is-dragging' : ''}`}
+          onPointerDown={startSwipe}
+          onPointerUp={endSwipe}
+          onPointerCancel={endSwipe}
+        >
           <img
             src={photos[photo]}
             alt={photo === 0 ? work.alt : `${work.alt} — foto ${photo + 1}`}
             loading="eager"
+            draggable="false"
           />
           {total > 1 && (
             <div className="project-dialog__media-controls">
@@ -357,7 +385,7 @@ export default function WorksSection({ works }) {
                     <span className="work-card__meta">{work.medium}</span>
                   </span>
                   <span className="work-card__bar" aria-hidden="true">
-                    <span className="work-card__bar-default">VER O PROJETO</span>
+                    <span className="work-card__bar-default">BORA VER</span>
                     <span className="work-card__bar-hover">BORA VER</span>
                     <span>{'↗\uFE0E'}</span>
                   </span>

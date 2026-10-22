@@ -1015,6 +1015,49 @@ main { padding-top: var(--header-height); }
   .hero-portrait img { object-position: center top; }
   .hero-portrait figcaption { right: 14px; bottom: 34px; font-size: clamp(2.6rem, 12vw, 4.4rem); }
 
+  /* Mesma estrutura do desktop, empilhada no mobile */
+  .hero--desktop .hero-stage {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 22px;
+    padding: 26px var(--content-gutter) 0;
+  }
+  .hero--desktop h1 { font-size: clamp(2.2rem, 8.5vw, 2.8rem); }
+  .hero--desktop .hero-brush {
+    margin-top: clamp(62px, 17vw, 92px);
+    font-size: clamp(3.2rem, 15.5vw, 5rem);
+    text-align: left;
+    white-space: nowrap;
+  }
+  .hero--desktop .hero-copy { padding: 0; }
+  .hero--desktop .hero-facts { max-width: none; margin: 24px 0 0; }
+  .hero--desktop .hero-portrait { width: 100%; height: auto; aspect-ratio: 1122 / 1400; margin-top: 4px; }
+  .hero--desktop .hero-portrait figcaption { right: 14px; bottom: 34px; font-size: clamp(2.6rem, 12vw, 4.4rem); }
+
+  .hero-reel-head { margin-top: 34px; padding-bottom: 10px; }
+  .hero-reel {
+    height: auto;
+    align-items: flex-end;
+    justify-content: flex-start;
+    gap: 10px;
+    overflow-x: auto;
+    overflow-y: hidden;
+    scroll-snap-type: x proximity;
+  }
+  .hero-reel figure,
+  .hero-reel figure:nth-child(10n + 2),
+  .hero-reel figure:nth-child(10n + 3),
+  .hero-reel figure:nth-child(10n + 4),
+  .hero-reel figure:nth-child(10n + 5),
+  .hero-reel figure:nth-child(10n + 6),
+  .hero-reel figure:nth-child(10n + 7),
+  .hero-reel figure:nth-child(10n + 8),
+  .hero-reel figure:nth-child(10n + 9),
+  .hero-reel figure:nth-child(10n + 10) {
+    width: 42vw;
+    height: 56vw;
+    scroll-snap-align: start;
+  }
+
   .about { padding-block: 56px; }
   .about h2 { margin-bottom: 30px; font-size: clamp(2.25rem, 11vw, 3rem); }
   .about-body { grid-template-columns: 1fr; gap: 30px; }
@@ -1142,19 +1185,12 @@ main { padding-top: var(--header-height); }
   html, body { background: #fff; }
   .site-header, .fun-header, .curtain, .eyes, .skip-link, .works-links, .work-controls, .work-shade, .footer-credit { display: none !important; }
 
-  .hero { display: block; min-height: 0; gap: 0; padding: 0 0 6mm; }
-  .hero-top { display: contents; min-height: 0; }
-  .hero-copy { min-height: 0; padding: 0 0 6mm; }
-  .hero-strip { margin-top: 4mm; }
-  .hero h1 { font-size: 26pt; }
-  .hero-brush { font-size: 52pt; margin: 4mm 0; }
-  .hero-strip { padding: 0; margin-top: 5mm; }
-  .hero-strip figure { height: 55mm; aspect-ratio: auto; }
-  .hero-strip img { object-fit: cover; }
-  .hero-portrait { width: 100%; height: 115mm; margin: 5mm 0 0; transform: none; margin-left: 0; }
-  .hero-portrait-inner { width: auto; height: 100%; aspect-ratio: 2 / 3; margin-inline: auto; }
-  .hero-portrait-inner::after { display: none; }
-  .hero-portrait figcaption { font-size: 44pt; right: 12mm; bottom: 8mm; }
+  .hero-reel, .hero-reel-head { display: none !important; }
+
+  .hero--desktop .hero-stage { display: block; padding: 0; }
+  .hero--desktop .hero-copy { padding: 0 0 6mm; }
+  .hero--desktop .hero-facts { display: none; }
+  .hero--desktop .hero-portrait { width: 100%; height: 115mm; aspect-ratio: auto; margin: 5mm 0 0; }
 
   .about, .backstage, .works-intro { padding: 8mm 0; }
   .about { break-before: page; }
