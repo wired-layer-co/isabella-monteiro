@@ -926,17 +926,32 @@ body.fun-eyes-on * {
   .works__track.is-stacked { padding-inline: var(--edge-gutter); }
 
   .project-dialog {
-    width: calc(100vw - 20px);
-    max-height: min(92svh, 900px);
+    top: 0;
+    left: 0;
+    width: 100vw;
+    max-width: none;
+    height: 100svh;
+    max-height: 100svh;
+    box-shadow: none;
+    transform: none;
   }
 
-  .project-dialog__panel { grid-template-columns: minmax(0, 1fr); }
+  .project-dialog__panel {
+    max-height: 100svh;
+    grid-template-columns: minmax(0, 1fr);
+  }
 
-  .project-dialog__media { min-height: 44svh; }
+  .project-dialog__media { min-height: 0; height: 34svh; }
 
-  .project-dialog__copy { padding: 46px 22px 24px; }
+  .project-dialog__copy { gap: 14px; padding: 26px 18px 20px; }
 
-  .project-dialog__copy h2 { font-size: clamp(1.9rem, 9vw, 2.9rem); }
+  .project-dialog__copy h2 { font-size: clamp(1.85rem, 8.5vw, 2.6rem); }
+
+  .project-dialog__meta { font-size: 0.54rem; }
+  .project-dialog__credits { gap: 8px; padding: 10px 0; }
+  .project-dialog__description { font-size: 0.85rem; }
+  .project-dialog__credits dd { font-size: 0.78rem; }
+  .project-dialog__thumbs button { width: 40px; height: 50px; }
 
   .project-dialog__close { top: 10px; right: 10px; }
 }
