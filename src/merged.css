@@ -926,22 +926,22 @@ body.fun-eyes-on * {
   .works__track.is-stacked { padding-inline: var(--edge-gutter); }
 
   .project-dialog {
-    top: 0;
-    left: 0;
-    width: 100vw;
+    top: 50%;
+    left: 50%;
+    width: calc(100vw - 24px);
     max-width: none;
-    height: 100svh;
-    max-height: 100svh;
-    box-shadow: none;
-    transform: none;
+    height: auto;
+    max-height: min(88svh, 900px);
+    box-shadow: 0 24px 70px rgba(0, 0, 0, 0.24), 0 0 0 1px rgba(0, 0, 0, 0.08);
+    transform: translate(-50%, -50%);
   }
 
   .project-dialog__panel {
-    max-height: 100svh;
+    max-height: inherit;
     grid-template-columns: minmax(0, 1fr);
   }
 
-  .project-dialog__media { min-height: 0; height: 34svh; }
+  .project-dialog__media { min-height: 0; height: 30svh; }
 
   .project-dialog__copy { gap: 14px; padding: 26px 18px 20px; }
 
@@ -956,43 +956,87 @@ body.fun-eyes-on * {
   .project-dialog__close { top: 10px; right: 10px; }
 }
 
-/* Impressão/PDF da seção de trabalhos (mesma estrutura do desktop) */
+/* Impressão / PDF — estrutura atual (mesma no desktop e no mobile) */
 @media print {
-  .project-dialog,
-  .project-dialog__scrim { display: none !important; }
+  @page { size: A4; margin: 12mm; }
 
-  .works { padding: 8mm 0; }
-  .works__pin { position: static; height: auto; overflow: visible; padding: 0; }
-  .works__head { margin: 0 0 4mm; padding: 0; border: 0; }
-  .works__head .section-label,
-  .works__hint,
-  .works__filter { display: none !important; }
-  .works__head h2 { font-size: 42pt; margin: 0; }
-  .works__head h2 sup { font-size: 0.13em; }
+  :root { --paper: #fff; --ink: #111; --terracotta: #9f6740; --olive: #6c6a51; --butter: #f8e7ac; }
 
-  .works__viewport { display: block; flex: none; overflow: visible; }
+  html, body { background: #fff !important; }
+
+  .site-header, .curtain, .eyes, .skip-link, .works__filter, .works__hint,
+  .work-card__bar, .work-card__top, .work-controls, .work-shade,
+  .project-dialog, .project-dialog__scrim, .footer-credit, .works-links { display: none !important; }
+
+  /* capa */
+  .hero--desktop { display: block !important; padding: 0 0 6mm !important; }
+  .hero--desktop .hero-stage { display: block !important; padding: 0 !important; }
+  .hero--desktop .hero-copy { padding: 0 0 6mm !important; }
+  .hero--desktop h1 { font-size: 26pt !important; line-height: 0.9 !important; }
+  .hero--desktop .hero-brush { margin: 3mm 0 0 !important; font-size: 50pt !important; white-space: nowrap !important; }
+  .hero--desktop .hero-facts { display: none !important; }
+  .hero--desktop .hero-portrait { width: 100% !important; height: 112mm !important; aspect-ratio: auto !important; margin: 0 !important; }
+  .hero--desktop .hero-portrait img { object-fit: cover !important; object-position: center 20% !important; }
+  .hero--desktop .hero-portrait figcaption { right: 10mm !important; bottom: 6mm !important; font-size: 38pt !important; }
+
+  .hero-reel-head { display: flex !important; margin: 4mm 0 2mm !important; padding: 0 !important; font-size: 7pt !important; }
+  .hero-reel { display: grid !important; height: auto !important; padding: 0 !important; gap: 2mm !important; overflow: visible !important; grid-template-columns: repeat(10, minmax(0, 1fr)) !important; }
+  .hero-reel figure,
+  .hero-reel figure:nth-child(10n + 2),
+  .hero-reel figure:nth-child(10n + 3),
+  .hero-reel figure:nth-child(10n + 4),
+  .hero-reel figure:nth-child(10n + 5),
+  .hero-reel figure:nth-child(10n + 6),
+  .hero-reel figure:nth-child(10n + 7),
+  .hero-reel figure:nth-child(10n + 8),
+  .hero-reel figure:nth-child(10n + 9),
+  .hero-reel figure:nth-child(10n + 10) { width: 100% !important; height: 34mm !important; }
+  .hero-reel img { object-fit: cover !important; object-position: center 16% !important; }
+
+  /* sobre */
+  .about { padding: 8mm 0 !important; break-inside: avoid; page-break-inside: avoid; }
+  .about h2 { margin: 0 0 5mm !important; font-size: 22pt !important; }
+  .about-body { display: grid !important; max-width: none !important; grid-template-columns: 1.4fr 1fr !important; gap: 8mm !important; align-items: start !important; }
+  .about-copy p { max-width: none !important; font-size: 9.5pt !important; line-height: 1.45 !important; }
+  .about-copy p + p { margin-top: 1em !important; }
+  .about-portrait { width: 100% !important; max-width: none !important; aspect-ratio: 0.735 !important; }
+  .about-portrait__reveal { display: none !important; }
+  .casting { max-width: none !important; margin-top: 6mm !important; padding-top: 4mm !important; }
+  .casting dt { font-size: 7pt !important; }
+  .casting dd { font-size: 11pt !important; }
+
+  /* trabalhos */
+  .works { padding: 8mm 0 !important; }
+  .works__pin { position: static !important; height: auto !important; overflow: visible !important; padding: 0 !important; }
+  .works__head { margin: 0 0 4mm !important; padding: 0 !important; border: 0 !important; }
+  .works__head .section-label { display: none !important; }
+  .works__head h2 { margin: 0 !important; font-size: 34pt !important; }
+  .works__head h2 sup { font-size: 0.13em !important; }
+  .works__viewport { display: block !important; flex: none !important; overflow: visible !important; }
   .works__track,
-  .works__track.is-stacked {
-    display: grid;
-    width: 100%;
-    grid-template-columns: 1fr;
-    gap: 6mm;
-    padding: 0;
-    transform: none !important;
-  }
+  .works__track.is-stacked { display: grid !important; width: 100% !important; grid-template-columns: repeat(2, minmax(0, 1fr)) !important; gap: 5mm !important; padding: 0 !important; transform: none !important; }
+  .work-card { width: 100% !important; height: auto !important; flex: none !important; border: 1px solid #111 !important; break-inside: avoid !important; page-break-inside: avoid !important; }
+  .work-card__media { flex: none !important; aspect-ratio: 16 / 9 !important; }
+  .work-card__caption { min-height: 0 !important; padding: 3mm !important; }
+  .work-card__title { font-size: 12pt !important; -webkit-line-clamp: unset !important; }
+  .work-card__meta { font-size: 7pt !important; }
 
-  .work-card {
-    width: 100%;
-    height: auto !important;
-    flex: none;
-    border: 1px solid #111;
-    break-inside: avoid;
-    page-break-inside: avoid;
-  }
-  .work-card__media { flex: none; aspect-ratio: 16 / 9; }
-  .work-card__top,
-  .work-card__bar { display: none !important; }
-  .work-card__caption { min-height: 0 !important; padding: 3mm 4mm; }
-  .work-card__title { font-size: 16pt; -webkit-line-clamp: unset; }
-  .work-card__meta { font-size: 8pt; }
+  /* fora de cena */
+  .backstage { padding: 8mm 0 !important; break-inside: avoid; page-break-inside: avoid; }
+  .backstage-grid { display: grid !important; grid-template-columns: 1.2fr 0.8fr !important; gap: 6mm !important; }
+  .backstage-title { grid-column: 1 / -1 !important; margin: 0 0 3mm !important; font-size: 30pt !important; white-space: nowrap !important; }
+  .backstage-intro { font-size: 9.5pt !important; }
+  .backstage-list { max-width: none !important; padding: 0 4mm !important; }
+  .backstage-list li { padding: 3mm 0 !important; font-size: 7pt !important; }
+  .backstage-photo { grid-row: 2 / 4 !important; max-width: none !important; }
+
+  /* contato */
+  .contact { padding: 8mm 0 !important; break-inside: avoid; page-break-inside: avoid; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  .contact h2 { margin: 0 0 4mm !important; font-size: 32pt !important; }
+  .contact-panel a { min-height: auto !important; gap: 4mm !important; padding: 4mm 5mm !important; }
+  .contact-panel a > span { font-size: 10pt !important; }
+  .contact-panel small { font-size: 7pt !important; }
+
+  .site-footer { padding: 5mm 0 !important; }
+  .site-footer > p, .back-to-top { font-size: 8pt !important; }
 }

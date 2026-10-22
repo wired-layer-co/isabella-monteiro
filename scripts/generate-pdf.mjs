@@ -16,16 +16,6 @@ const root = resolve(fileURLToPath(new URL('.', import.meta.url)), '..')
 const dist = join(root, 'dist')
 const output = join(root, 'public', 'portfolio-isabella-monteiro.pdf')
 
-// A estrutura do site mudou e o layout de impressão ainda não cobre a nova
-// seção de trabalhos; preserva o PDF aprovado até que seja revisado.
-if (process.env.GENERATE_PDF !== '1') {
-  console.log('PDF preservado (defina GENERATE_PDF=1 para regerar).')
-  if (existsSync(output) && existsSync(dist)) {
-    copyFileSync(output, join(dist, 'portfolio-isabella-monteiro.pdf'))
-  }
-  process.exit(0)
-}
-
 const chromeCandidates = [
   process.env.CHROME_BIN,
   '/usr/bin/chromium',
