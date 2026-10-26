@@ -21,70 +21,180 @@ function coverFor(work) {
   return COVERS[work.id] ?? work.images[0]
 }
 
-function ProjectDialog({ work, onRequestClose }) {
+function ProjectDialog({
+  work,
+  index,
+  total,
+  mobile,
+  onPrev,
+  onNext,
+  onRequestClose,
+}) {
   const closeRef = useRef(null)
+  const dialogRef = useRef(null)
   const panelRef = useRef(null)
-  const [photo, setPhoto] = useState(0)
+  // A foto pertence ao trabalho: trocar de trabalho volta para a primeira sem
+  // precisar de efeito de reset.
+  const [photoState, setPhotoState] = useState({ workId: work.id, index: 0 })
+  const photo = photoState.workId === work.id ? photoState.index : 0
+  const onRequestCloseRef = useRef(onRequestClose)
+  useEffect(() => {
+    onRequestCloseRef.current = onRequestClose
+  }, [onRequestClose])
   const photos = work.images
-  const total = photos.length
+  const photoTotal = photos.length
+  const isFirst = index === 0
+  const isLast = index === total - 1
+
+  // "AUDIOVISUAL · AUDIOVISUAL" acontece quando o medium repete a categoria.
+  const metaParts = [
+    work.category === 'teatro' ? 'TEATRO' : 'AUDIOVISUAL',
+    work.year,
+    work.medium,
+  ].filter(Boolean)
+  const meta = metaParts.filter(
+    (part, partIndex) =>
+      metaParts.findIndex((other) => String(other).toLowerCase() === String(part).toLowerCase()) === partIndex,
+  )
 
   useEffect(() => {
     document.body.classList.add('fun-dialog-open')
     const previousOverflow = document.body.style.overflow
+    const previousHtmlOverflow = document.documentElement.style.overflow
     document.body.style.overflow = 'hidden'
+    // No mobile a barra de rolagem do navegador fica visivel e atrapalha;
+    // travar o html tambem remove a barra (em mobile ela e overlay).
+    if (window.matchMedia('(max-width: 899px)').matches) {
+      document.documentElement.style.overflow = 'hidden'
+    }
     const focusTimer = window.setTimeout(() => closeRef.current?.focus({ preventScroll: true }), 80)
+
+    // ESC fecha mesmo quando o foco saiu do dialogo (ex.: depois de arrastar
+    // na imagem, o foco vai para o body).
+    const onWindowKeyDown = (event) => {
+      if (event.key !== 'Escape') return
+      event.preventDefault()
+      onRequestCloseRef.current()
+    }
+    window.addEventListener('keydown', onWindowKeyDown)
 
     return () => {
       window.clearTimeout(focusTimer)
+      window.removeEventListener('keydown', onWindowKeyDown)
       document.body.classList.remove('fun-dialog-open')
       document.body.style.overflow = previousOverflow
+      document.documentElement.style.overflow = previousHtmlOverflow
     }
   }, [])
 
+  // Troca de trabalho: o conteudo novo comeca no topo.
+  useEffect(() => {
+    panelRef.current?.scrollTo?.({ top: 0 })
+  }, [work.id])
+
   const showPhoto = (next) => {
-    setPhoto((next + total) % total)
+    setPhotoState({ workId: work.id, index: (next + photoTotal) % photoTotal })
   }
 
-  const swipe = useRef({ active: false, x: 0, y: 0 })
+  const selectPhoto = (next) => {
+    setPhotoState({ workId: work.id, index: next })
+  }
+
+  const swipe = useRef({ active: false, axis: null, x: 0, y: 0 })
   const [dragging, setDragging] = useState(false)
+  const [dragY, setDragY] = useState(0)
+
+  // Distancia (px) para trocar de trabalho durante o arraste.
+  const STEP_PX = 72
 
   const startSwipe = (event) => {
-    if (total < 2) return
     if (event.target.closest?.('.project-dialog__media-controls')) return
     if (event.pointerType === 'mouse' && event.button !== 0) return
-    swipe.current = { active: true, x: event.clientX, y: event.clientY }
+    swipe.current = { active: true, axis: null, x: event.clientX, y: event.clientY }
     setDragging(true)
-    event.currentTarget.setPointerCapture?.(event.pointerId)
+    // Pode nao haver ponteiro ativo (gesto cancelado, evento sintetico).
+    try {
+      event.currentTarget.setPointerCapture?.(event.pointerId)
+    } catch {
+      // segue sem captura: o pointerup ainda chega no mesmo elemento
+    }
+  }
+
+  // Arraste continuo: o painel acompanha o dedo e troca de trabalho ao cruzar
+  // o passo, sem esperar soltar.
+  const moveSwipe = (event) => {
+    const drag = swipe.current
+    if (!drag.active || !mobile) return
+    const dx = event.clientX - drag.x
+    const dy = event.clientY - drag.y
+    if (!drag.axis) {
+      if (Math.abs(dx) < 8 && Math.abs(dy) < 8) return
+      drag.axis = Math.abs(dy) > Math.abs(dx) ? 'y' : 'x'
+    }
+    if (drag.axis !== 'y') return
+
+    // Nos extremos nao ha para onde ir: nao desloca (evita mostrar vazio).
+    const blocked = (dy > 0 && isLast) || (dy < 0 && isFirst)
+    if (blocked) {
+      setDragY(0)
+      return
+    }
+    setDragY(dy)
+
+    if (dy >= STEP_PX) {
+      onNext()
+      drag.y = event.clientY
+      setDragY(0)
+    } else if (dy <= -STEP_PX) {
+      onPrev()
+      drag.y = event.clientY
+      setDragY(0)
+    }
   }
 
   const endSwipe = (event) => {
-    if (!swipe.current.active) return
-    const horizontal = event.clientX - swipe.current.x
-    const vertical = event.clientY - swipe.current.y
-    swipe.current.active = false
+    const drag = swipe.current
+    if (!drag.active) return
+    const horizontal = event.clientX - drag.x
+    const vertical = event.clientY - drag.y
+    drag.active = false
     setDragging(false)
-    if (Math.abs(horizontal) < 40 || Math.abs(horizontal) <= Math.abs(vertical)) return
-    showPhoto(horizontal < 0 ? photo + 1 : photo - 1)
+    setDragY(0)
+
+    if (!mobile || drag.axis === 'x') {
+      if (Math.abs(horizontal) < 40 || Math.abs(horizontal) < Math.abs(vertical)) return
+      if (photoTotal < 2) return
+      showPhoto(horizontal < 0 ? photo + 1 : photo - 1)
+      return
+    }
+
+    // No ultimo, arrastar para baixo fecha e devolve ao card correspondente.
+    if (isLast && vertical >= 90) onRequestClose()
   }
 
   const onKeyDown = (event) => {
-    if (event.key === 'Escape') {
+    if (mobile && event.key === 'ArrowDown') {
       event.preventDefault()
-      onRequestClose()
+      onNext()
       return
     }
-    if (total > 1 && event.key === 'ArrowRight') {
+    if (mobile && event.key === 'ArrowUp') {
+      event.preventDefault()
+      onPrev()
+      return
+    }
+    if (photoTotal > 1 && event.key === 'ArrowRight') {
       event.preventDefault()
       showPhoto(photo + 1)
       return
     }
-    if (total > 1 && event.key === 'ArrowLeft') {
+    if (photoTotal > 1 && event.key === 'ArrowLeft') {
       event.preventDefault()
       showPhoto(photo - 1)
       return
     }
     if (event.key === 'Tab') {
-      const root = panelRef.current
+      const root = dialogRef.current
       if (!root) return
       const items = Array.from(root.querySelectorAll('a[href], button:not([disabled])')).filter(
         (element) => element.getClientRects().length > 0,
@@ -107,13 +217,17 @@ function ProjectDialog({ work, onRequestClose }) {
       <div className="project-dialog__scrim" onClick={onRequestClose} aria-hidden="true" />
       <div
         className="project-dialog"
-        ref={panelRef}
+        ref={dialogRef}
         role="dialog"
         aria-modal="true"
         aria-labelledby="project-dialog-title"
         onKeyDown={onKeyDown}
       >
-      <div className="project-dialog__panel">
+      <div
+        className={`project-dialog__panel${dragging ? ' is-dragging' : ''}`}
+        ref={panelRef}
+        style={dragY ? { transform: `translateY(${dragY}px)` } : undefined}
+      >
         <button className="project-dialog__close" type="button" onClick={onRequestClose} ref={closeRef}>
           Fechar <span aria-hidden="true">{'✕\uFE0E'}</span>
         </button>
@@ -121,6 +235,7 @@ function ProjectDialog({ work, onRequestClose }) {
         <div
           className={`project-dialog__media${dragging ? ' is-dragging' : ''}`}
           onPointerDown={startSwipe}
+          onPointerMove={moveSwipe}
           onPointerUp={endSwipe}
           onPointerCancel={endSwipe}
         >
@@ -130,12 +245,12 @@ function ProjectDialog({ work, onRequestClose }) {
             loading="eager"
             draggable="false"
           />
-          {total > 1 && (
+          {photoTotal > 1 && (
             <div className="project-dialog__media-controls">
               <button type="button" onClick={() => showPhoto(photo - 1)} aria-label={`Foto anterior de ${work.title}`}>
                 {'←\uFE0E'}
               </button>
-              <span aria-live="polite">{String(photo + 1).padStart(2, '0')} / {String(total).padStart(2, '0')}</span>
+              <span aria-live="polite">{String(photo + 1).padStart(2, '0')} / {String(photoTotal).padStart(2, '0')}</span>
               <button type="button" onClick={() => showPhoto(photo + 1)} aria-label={`Próxima foto de ${work.title}`}>
                 {'→\uFE0E'}
               </button>
@@ -144,11 +259,16 @@ function ProjectDialog({ work, onRequestClose }) {
         </div>
 
         <div className="project-dialog__copy">
-          <p className="project-dialog__meta">
-            {work.category === 'teatro' ? 'TEATRO' : 'AUDIOVISUAL'}
-            {work.year ? ` · ${work.year}` : ''}
-            {` · ${work.medium}`}
-          </p>
+          <div className="project-dialog__topline">
+            <p className="project-dialog__meta">{meta.join(' · ')}</p>
+            {mobile && (
+              <p className="project-dialog__step" aria-live="polite">
+                {String(index + 1).padStart(2, '0')}
+                <span aria-hidden="true"> / </span>
+                {String(total).padStart(2, '0')}
+              </p>
+            )}
+          </div>
           <h2 id="project-dialog-title">{work.title}</h2>
 
           {(work.direction || work.script) && (
@@ -170,16 +290,16 @@ function ProjectDialog({ work, onRequestClose }) {
 
           {work.description && <p className="project-dialog__description">{work.description}</p>}
 
-          {total > 1 && (
+          {photoTotal > 1 && (
             <div className="project-dialog__thumbs" role="group" aria-label={`Fotos de ${work.title}`}>
-              {photos.map((source, index) => (
+              {photos.map((source, photoIndex) => (
                 <button
                   type="button"
-                  className={index === photo ? 'is-current' : ''}
+                  className={photoIndex === photo ? 'is-current' : ''}
                   key={source}
-                  aria-label={`Ver foto ${index + 1} de ${total}`}
-                  aria-pressed={index === photo}
-                  onClick={() => setPhoto(index)}
+                  aria-label={`Ver foto ${photoIndex + 1} de ${photoTotal}`}
+                  aria-pressed={photoIndex === photo}
+                  onClick={() => selectPhoto(photoIndex)}
                 >
                   <img src={source} alt="" loading="lazy" />
                 </button>
@@ -187,7 +307,21 @@ function ProjectDialog({ work, onRequestClose }) {
             </div>
           )}
 
-          <p className="project-dialog__hint">{'Use ←\uFE0E →\uFE0E para passar as fotos · ESC para fechar'}</p>
+          {mobile && isLast && (
+            <p className="project-dialog__last">
+              Último trabalho. Arraste para baixo para voltar ao site.
+            </p>
+          )}
+
+          <p className="project-dialog__hint">
+            {photoTotal > 1
+              ? mobile
+                ? 'Arraste para o lado para passar as fotos'
+                : 'Use ←\uFE0E →\uFE0E para passar as fotos · ESC para fechar'
+              : mobile
+                ? ''
+                : 'ESC para fechar'}
+          </p>
         </div>
       </div>
       </div>
@@ -201,12 +335,15 @@ export default function WorksSection({ works }) {
   const trackRef = useRef(null)
   const metricsRef = useRef({ distance: 0 })
   const triggerRef = useRef(null)
-  const [activeWork, setActiveWork] = useState(null)
+  const pendingScrollRef = useRef(null)
+  const [scrollIndex, setScrollIndex] = useState(0)
+  const [activeIndex, setActiveIndex] = useState(null)
   const [filter, setFilter] = useState('todos')
   const desktop = useMediaQuery('(min-width: 900px)')
   const reducedMotion = usePrefersReducedMotion()
   const pinned = desktop
   const visibleWorks = filter === 'todos' ? works : works.filter((work) => work.category === filter)
+  const activeWork = activeIndex === null ? null : visibleWorks[activeIndex] ?? null
 
   useEffect(() => {
     const section = sectionRef.current
@@ -306,17 +443,91 @@ export default function WorksSection({ works }) {
     })
   }
 
+  // Ao fechar no mobile, rola a pagina ate o card do trabalho em que parou.
+  useEffect(() => {
+    if (activeIndex !== null) return
+    const index = pendingScrollRef.current
+    if (index === null) return
+    pendingScrollRef.current = null
+    if (desktop) {
+      const trigger = triggerRef.current
+      triggerRef.current = null
+      trigger?.focus?.({ preventScroll: true })
+      return
+    }
+    const card = trackRef.current?.querySelectorAll('.work-card')[index]
+    if (!card) return
+    window.requestAnimationFrame(() => {
+      card.scrollIntoView({ block: 'center', behavior: 'auto' })
+      card.focus({ preventScroll: true })
+      triggerRef.current = null
+    })
+  }, [activeIndex, desktop])
+
   const openWork = (work, event) => {
-    triggerRef.current = event.currentTarget
-    setActiveWork(work)
+    triggerRef.current = event?.currentTarget ?? null
+    const index = visibleWorks.findIndex((item) => item.id === work.id)
+    setActiveIndex(index < 0 ? 0 : index)
   }
 
   const closeWork = () => {
-    setActiveWork(null)
-    window.requestAnimationFrame(() => {
-      triggerRef.current?.focus({ preventScroll: true })
-    })
+    // Ao fechar, a pagina fica no card do trabalho em que a pessoa parou
+    // (inclusive o ultimo), para continuar a leitura dali.
+    pendingScrollRef.current = activeIndex
+    setActiveIndex(null)
   }
+
+  // Reels: desce para o proximo trabalho, sobe para o anterior. No ultimo,
+  // descer fecha e devolve a pessoa ao site normal.
+  const goToWork = (delta) => {
+    if (activeIndex === null) return
+    const next = activeIndex + delta
+    if (next >= visibleWorks.length) {
+      closeWork()
+      return
+    }
+    if (next < 0) return
+    setActiveIndex(next)
+  }
+
+  // No mobile, o card "da vez" e o ultimo que passou da linha de leitura.
+  // E nele que a barra BORA VER aparece (os anteriores escondem).
+  useEffect(() => {
+    if (desktop) return undefined
+    let frame = 0
+
+    const update = () => {
+      frame = 0
+      const cards = trackRef.current?.querySelectorAll('.work-card')
+      if (!cards?.length) return
+      // Linha de leitura acima do centro: o card vira "o da vez" quando ja
+      // subiu um pouco na tela (nao no meio exato do viewport).
+      const line = window.innerHeight * 0.38
+      let best = 0
+      cards.forEach((card, index) => {
+        const rect = card.getBoundingClientRect()
+        if (rect.top <= line) best = index
+      })
+      setScrollIndex((previous) => (previous === best ? previous : best))
+    }
+
+    const onScroll = () => {
+      if (!frame) frame = window.requestAnimationFrame(update)
+    }
+
+    frame = window.requestAnimationFrame(update)
+    window.addEventListener('scroll', onScroll, { passive: true })
+    window.addEventListener('resize', onScroll)
+
+    return () => {
+      window.cancelAnimationFrame(frame)
+      window.removeEventListener('scroll', onScroll)
+      window.removeEventListener('resize', onScroll)
+    }
+  }, [desktop, visibleWorks.length])
+
+  const currentCardIndex =
+    activeIndex ?? Math.min(scrollIndex, Math.max(0, visibleWorks.length - 1))
 
   return (
     <section
@@ -356,9 +567,10 @@ export default function WorksSection({ works }) {
           >
             {visibleWorks.map((work, index) => {
               const cover = coverFor(work)
+              const isCurrent = index === currentCardIndex
               return (
                 <button
-                  className="work-card"
+                  className={`work-card${isCurrent ? ' is-current' : ''}`}
                   type="button"
                   key={work.id}
                   aria-haspopup="dialog"
@@ -404,7 +616,17 @@ export default function WorksSection({ works }) {
         </div>
       </div>
 
-      {activeWork && <ProjectDialog work={activeWork} onRequestClose={closeWork} />}
+      {activeWork && (
+        <ProjectDialog
+          work={activeWork}
+          index={activeIndex}
+          total={visibleWorks.length}
+          mobile={!desktop}
+          onPrev={() => goToWork(-1)}
+          onNext={() => goToWork(1)}
+          onRequestClose={closeWork}
+        />
+      )}
     </section>
   )
 }

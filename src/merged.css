@@ -687,6 +687,14 @@ body.fun-eyes-on * {
 }
 
 .works__track.is-stacked .work-card__bar {
+  opacity: 0;
+  transform: translateY(101%);
+  transition: transform 320ms var(--ease), opacity 200ms var(--ease);
+}
+
+/* So o card da vez mostra o BORA VER; os anteriores escondem. */
+.works__track.is-stacked .work-card.is-current .work-card__bar {
+  opacity: 1;
   transform: translateY(0);
 }
 
@@ -707,9 +715,10 @@ body.fun-eyes-on * {
   margin: 0;
   overflow: hidden;
   color: var(--ink);
-  background: transparent;
+  background: var(--paper);
   border: 0;
-  box-shadow: 0 30px 90px rgba(0, 0, 0, 0.24), 0 0 0 1px rgba(0, 0, 0, 0.08);
+  /* Sem sombra: o scrim ja separa o card da pagina. */
+  box-shadow: none;
   transform: translate(-50%, -50%);
 }
 
@@ -727,6 +736,11 @@ body.fun-eyes-on * {
   grid-template-columns: minmax(0, 1.12fr) minmax(340px, 0.88fr);
   overflow: auto;
   overscroll-behavior: contain;
+  transition: transform 180ms linear;
+}
+
+.project-dialog__panel.is-dragging {
+  transition: none;
 }
 
 .project-dialog__close {
@@ -820,6 +834,36 @@ body.fun-eyes-on * {
   line-height: 1.5;
   text-transform: uppercase;
 }
+
+/* Reels: linha de topo com categoria e posicao do trabalho */
+
+.project-dialog__topline {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.project-dialog__step {
+  flex: none;
+  color: var(--ink);
+  font-size: 0.62rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.08em;
+}
+
+.project-dialog__last {
+  padding-top: 2px;
+  color: var(--olive);
+  font-size: 0.54rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  line-height: 1.45;
+  text-transform: uppercase;
+}
+
+/* Entrada do trabalho: animada via Web Animations (WorksSection) */
 
 .project-dialog__copy h2 {
   margin: 0;
@@ -932,20 +976,50 @@ body.fun-eyes-on * {
     left: 50%;
     width: calc(100vw - 24px);
     max-width: none;
-    height: auto;
+    /* Altura fixa: o card nao muda de tamanho entre trabalhos, entao a unica
+       animacao e o deslize vertical. A faixa da direita e a regua. */
+    height: min(88svh, 900px);
     max-height: min(88svh, 900px);
-    box-shadow: 0 24px 70px rgba(0, 0, 0, 0.24), 0 0 0 1px rgba(0, 0, 0, 0.08);
     transform: translate(-50%, -50%);
   }
 
   .project-dialog__panel {
+    height: 100%;
     max-height: inherit;
     grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: auto minmax(0, 1fr);
+    /* So o texto rola; a regua e o fechar ficam fixos. */
+    overflow: hidden;
   }
 
-  .project-dialog__media { min-height: 0; height: 30svh; }
+  .project-dialog__media { min-height: 0; height: 36svh; touch-action: none; }
+  /* Nunca cortar: a foto inteira aparece, com letterbox quando preciso. */
+  .project-dialog__media > img { object-fit: contain; }
 
   .project-dialog__copy { gap: 14px; padding: 26px 18px 20px; }
+
+  /* controles da foto compactos, para nao cobrir a imagem */
+  .project-dialog__media-controls {
+    right: 8px;
+    bottom: 8px;
+    left: 8px;
+    gap: 8px;
+    padding: 3px;
+  }
+
+  .project-dialog__media-controls button {
+    width: 28px;
+    height: 28px;
+    font-size: 0.85rem;
+  }
+
+  .project-dialog__media-controls span { font-size: 0.5rem; }
+
+  /* a barra de rolagem do painel/texto nao aparece no mobile */
+  .project-dialog__panel,
+  .project-dialog__copy { scrollbar-width: none; }
+  .project-dialog__panel::-webkit-scrollbar,
+  .project-dialog__copy::-webkit-scrollbar { display: none; }
 
   .project-dialog__copy h2 { font-size: clamp(1.85rem, 8.5vw, 2.6rem); }
 
