@@ -415,16 +415,20 @@ main { padding-top: var(--header-height); }
   display: flex;
   width: 100%;
   height: clamp(210px, 25.5vw, 380px);
-  padding: 0 var(--edge-gutter);
+  /* Sem gutter: a primeira e a ultima foto encostam nas laterais. */
+  padding: 0;
   align-items: flex-end;
   justify-content: center;
-  gap: clamp(8px, 0.85vw, 14px);
+  gap: var(--reel-gap);
   overflow: hidden;
+  --reel-gap: clamp(8px, 0.85vw, 14px);
 }
 
 .hero-reel figure {
-  width: clamp(104px, 10.2vw, 180px);
-  flex: 0 0 auto;
+  /* As 10 fotos dividem a largura disponivel: nenhuma fica cortada na ponta. */
+  width: auto;
+  min-width: 0;
+  flex: 1 1 0;
   height: clamp(170px, 20vw, 300px);
   margin: 0;
   overflow: hidden;
@@ -452,7 +456,15 @@ main { padding-top: var(--header-height); }
 /* O hover cresce a foto para cima dentro da altura já reservada da régua,
    então nada abaixo (Sobre mim) se mexe. */
 @media (hover: hover) {
-  .hero-reel figure:hover { height: 100%; }
+  /* No hover o frame cresce de verdade: ocupa a largura dos vizinhos (margens
+     negativas comem o gap) e a foto aparece inteira, sem corte embaixo. */
+  /* Cresce exatamente os dois gaps do proprio item (largura base + 2 gaps) e
+     usa margens negativas para ocupar esse espaco: os vizinhos nao mudam. */
+  .hero-reel figure:hover {
+    flex: 0 0 calc((100% - 9 * var(--reel-gap)) / 10 + 2 * var(--reel-gap));
+    height: 100%;
+    margin-inline: calc(var(--reel-gap) * -1);
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -465,6 +477,9 @@ main { padding-top: var(--header-height); }
 .about {
   padding-block: clamp(54px, 6vw, 92px);
   background: var(--paper);
+  /* medidas do titulo reaproveitadas para alinhar a foto pelo topo dele */
+  --about-title-size: clamp(2.2rem, 4.6vw, 4.2rem);
+  --about-title-gap: clamp(24px, 3.6vw, 46px);
 }
 
 .about > * {
@@ -476,8 +491,8 @@ main { padding-top: var(--header-height); }
 
 .about h2 {
   max-width: 1300px;
-  margin: 0 auto clamp(24px, 3.6vw, 46px);
-  font-size: clamp(2.2rem, 4.6vw, 4.2rem);
+  margin: 0 auto var(--about-title-gap);
+  font-size: var(--about-title-size);
   font-style: italic;
   font-weight: 400;
   letter-spacing: -0.045em;
@@ -524,10 +539,23 @@ main { padding-top: var(--header-height); }
   object-position: center 20%;
 }
 
+/* No desktop a foto sobe para alinhar com o topo do titulo "Sobre mim",
+   em vez de comecar junto do texto. */
+@media screen and (min-width: 900px) {
+  .about-portrait {
+    margin-top: calc(-0.94 * var(--about-title-size) - var(--about-title-gap));
+  }
+}
+
 .about-portrait__reveal {
   opacity: 0;
   pointer-events: none;
   transition: opacity 300ms var(--ease);
+}
+
+/* Toque (mobile): segurar a foto mostra a segunda imagem. */
+.about-portrait.is-revealed .about-portrait__reveal {
+  opacity: 1;
 }
 
 @media (hover: hover) {
@@ -1036,6 +1064,7 @@ main { padding-top: var(--header-height); }
   .hero-reel-head { margin-top: 34px; padding-bottom: 10px; }
   .hero-reel {
     height: auto;
+    padding: 0 var(--edge-gutter);
     align-items: flex-end;
     justify-content: flex-start;
     gap: 10px;
@@ -1053,6 +1082,8 @@ main { padding-top: var(--header-height); }
   .hero-reel figure:nth-child(10n + 8),
   .hero-reel figure:nth-child(10n + 9),
   .hero-reel figure:nth-child(10n + 10) {
+    /* no mobile a regua e um carrossel horizontal: largura fixa + scroll */
+    flex: 0 0 auto;
     width: 42vw;
     height: 56vw;
     scroll-snap-align: start;
@@ -1157,7 +1188,8 @@ main { padding-top: var(--header-height); }
   /* Títulos de display: no zoom eles ficam no tamanho físico do desktop 100%. */
   .hero--desktop h1 { font-size: clamp(3.72rem, calc(2.8vw + 32.3px), 6.4rem); }
   .hero--desktop .hero-brush { font-size: clamp(4.56rem, calc(5.875vw + 16.6px), 8.6rem); }
-  .about h2 { font-size: clamp(2.76rem, calc(0.19vw + 42.4px), 4.2rem); }
+  .about { --about-title-size: clamp(2.76rem, calc(0.19vw + 42.4px), 4.2rem); }
+  .about h2 { font-size: var(--about-title-size); }
   .backstage-title { font-size: clamp(4.4rem, 70.4px, 6.6rem); }
   .contact h2 { font-size: clamp(5rem, 81px, 7.6rem); }
   .eyebrow { font-size: 0.7rem; }

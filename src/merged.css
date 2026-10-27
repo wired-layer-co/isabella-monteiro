@@ -710,7 +710,7 @@ body.fun-eyes-on * {
   z-index: 950;
   width: min(1120px, calc(100vw - 40px));
   max-width: none;
-  max-height: min(88svh, 940px);
+  max-height: min(92svh, 940px);
   padding: 0;
   margin: 0;
   overflow: hidden;
@@ -763,7 +763,7 @@ body.fun-eyes-on * {
 
 .project-dialog__media {
   position: relative;
-  min-height: 520px;
+  min-height: 0;
   overflow: hidden;
   background: var(--ink);
   touch-action: pan-y;
@@ -820,8 +820,8 @@ body.fun-eyes-on * {
 .project-dialog__copy {
   display: flex;
   flex-direction: column;
-  gap: 18px;
-  padding: clamp(54px, 5vw, 74px) clamp(22px, 3.2vw, 42px) 28px;
+  gap: clamp(8px, 2svh, 18px);
+  padding: clamp(16px, 6svh, 74px) clamp(22px, 3.2vw, 42px) clamp(12px, 3svh, 28px);
   overflow-y: auto;
   background: var(--paper);
 }
@@ -869,7 +869,7 @@ body.fun-eyes-on * {
   margin: 0;
   color: var(--ink);
   font-family: var(--font-body);
-  font-size: clamp(2.2rem, 4.2vw, 4.4rem);
+  font-size: clamp(1.9rem, min(4.2vw, 6.2svh), 4.4rem);
   font-style: italic;
   font-weight: 400;
   line-height: 0.94;
@@ -878,8 +878,8 @@ body.fun-eyes-on * {
 
 .project-dialog__credits {
   display: grid;
-  gap: 10px;
-  padding: 14px 0;
+  gap: clamp(6px, 1.4svh, 10px);
+  padding: clamp(8px, 2svh, 14px) 0;
   border-top: 1px solid var(--ink);
   border-bottom: 1px solid var(--ink);
 }
@@ -915,8 +915,8 @@ body.fun-eyes-on * {
 }
 
 .project-dialog__thumbs button {
-  width: 46px;
-  height: 58px;
+  width: clamp(38px, 5.4svh, 46px);
+  height: clamp(48px, 7svh, 58px);
   padding: 0;
   overflow: hidden;
   background: var(--ink);
@@ -977,26 +977,67 @@ body.fun-eyes-on * {
     width: calc(100vw - 24px);
     max-width: none;
     /* Altura fixa: o card nao muda de tamanho entre trabalhos, entao a unica
-       animacao e o deslize vertical. A faixa da direita e a regua. */
-    height: min(88svh, 900px);
-    max-height: min(88svh, 900px);
+       animacao e o deslize vertical. */
+    height: min(92svh, 900px);
+    max-height: min(92svh, 900px);
     transform: translate(-50%, -50%);
   }
 
   .project-dialog__panel {
+    display: flex;
     height: 100%;
     max-height: inherit;
-    grid-template-columns: minmax(0, 1fr);
-    grid-template-rows: auto minmax(0, 1fr);
-    /* So o texto rola; a regua e o fechar ficam fixos. */
+    flex-direction: column;
     overflow: hidden;
   }
 
-  .project-dialog__media { min-height: 0; height: 36svh; touch-action: none; }
-  /* Nunca cortar: a foto inteira aparece, com letterbox quando preciso. */
+  /* A imagem cede espaco quando o texto precisa; nunca corta a foto. */
+  .project-dialog__media {
+    min-height: 96px;
+    height: auto;
+    flex: 0 1 clamp(130px, 26svh, 320px);
+    touch-action: none;
+  }
+
   .project-dialog__media > img { object-fit: contain; }
 
-  .project-dialog__copy { gap: 14px; padding: 26px 18px 20px; }
+  .project-dialog__copy {
+    flex: 1 1 auto;
+    gap: clamp(5px, 1.8vw, 10px);
+    padding: clamp(10px, 3vw, 20px) clamp(12px, 4vw, 18px) clamp(8px, 2.6vw, 16px);
+    font-size: clamp(0.78rem, 3.4vw, 0.95rem);
+  }
+
+  .project-dialog__copy h2 {
+    font-size: clamp(1.3rem, 7vw, 2.1rem);
+    line-height: 0.98;
+  }
+
+  .project-dialog__meta,
+  .project-dialog__step { font-size: clamp(0.46rem, 2.2vw, 0.58rem); }
+
+  .project-dialog__credits {
+    gap: clamp(4px, 1.4vw, 8px);
+    padding: clamp(6px, 2vw, 10px) 0;
+  }
+  .project-dialog__credits dt { font-size: clamp(0.44rem, 2vw, 0.54rem); }
+  .project-dialog__credits dd { font-size: clamp(0.68rem, 3vw, 0.8rem); line-height: 1.3; }
+
+  .project-dialog__description {
+    font-size: clamp(0.72rem, 3.2vw, 0.88rem);
+    line-height: 1.4;
+  }
+
+  .project-dialog__thumbs { gap: 4px; }
+  .project-dialog__thumbs button {
+    width: clamp(28px, 8.6vw, 40px);
+    height: clamp(36px, 11vw, 50px);
+  }
+
+  /* os controles e o arraste ja se explicam; a dica extra so ocupava altura */
+  .project-dialog__hint { display: none; }
+
+  .project-dialog__last { font-size: clamp(0.46rem, 2.2vw, 0.54rem); }
 
   /* controles da foto compactos, para nao cobrir a imagem */
   .project-dialog__media-controls {
@@ -1015,19 +1056,11 @@ body.fun-eyes-on * {
 
   .project-dialog__media-controls span { font-size: 0.5rem; }
 
-  /* a barra de rolagem do painel/texto nao aparece no mobile */
+  /* nada de barra de rolagem visivel no mobile */
   .project-dialog__panel,
   .project-dialog__copy { scrollbar-width: none; }
   .project-dialog__panel::-webkit-scrollbar,
   .project-dialog__copy::-webkit-scrollbar { display: none; }
-
-  .project-dialog__copy h2 { font-size: clamp(1.85rem, 8.5vw, 2.6rem); }
-
-  .project-dialog__meta { font-size: 0.54rem; }
-  .project-dialog__credits { gap: 8px; padding: 10px 0; }
-  .project-dialog__description { font-size: 0.85rem; }
-  .project-dialog__credits dd { font-size: 0.78rem; }
-  .project-dialog__thumbs button { width: 40px; height: 50px; }
 
   .project-dialog__close { top: 10px; right: 10px; }
 }

@@ -323,7 +323,7 @@ export default function EyesCursor({ active }) {
         </span>
       </div>
       <img className="eyes__brand" src="/favicon.png?v=2" alt="" aria-hidden="true" />
-      <span className="eyes__label" ref={labelRef}>CLICK</span>
+      <span className="eyes__label" ref={labelRef}>CLIQUE</span>
     </div>
   )
 }

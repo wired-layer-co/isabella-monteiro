@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import {
   ArrowUpRight,
   DownloadSimple,
@@ -38,7 +39,7 @@ function HeroCopy() {
       <p className="eyebrow">Atriz</p>
       <h1>Isabella<br />Monteiro</h1>
       <p className="hero-brush" aria-label="Portfólio">
-        <span aria-hidden="true">*</span>Portfolio<span aria-hidden="true">*</span>
+        <span aria-hidden="true">*</span>Portfólio<span aria-hidden="true">*</span>
       </p>
       <ul className="hero-facts">
         <li>Curitiba · Brasil</li>
@@ -79,6 +80,16 @@ function Hero() {
 }
 
 function About() {
+  // No mobile nao existe hover: segurar a foto mostra a segunda imagem,
+  // soltar volta para a primeira.
+  const [revealed, setRevealed] = useState(false)
+
+  const reveal = (event) => {
+    if (event.pointerType === 'mouse') return
+    setRevealed(true)
+  }
+  const hideReveal = () => setRevealed(false)
+
   return (
     <section className="about" id="sobre">
       <h2>Sobre mim</h2>
@@ -86,7 +97,13 @@ function About() {
         <div className="about-copy">
           {about.paragraphs.map((paragraph) => <p key={paragraph}>{paragraph}</p>)}
         </div>
-        <figure className="about-portrait">
+        <figure
+          className={`about-portrait${revealed ? ' is-revealed' : ''}`}
+          onPointerDown={reveal}
+          onPointerUp={hideReveal}
+          onPointerCancel={hideReveal}
+          onPointerLeave={hideReveal}
+        >
           <img
             className="about-portrait__base"
             src={about.image}

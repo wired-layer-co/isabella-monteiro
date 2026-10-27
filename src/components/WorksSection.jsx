@@ -46,16 +46,12 @@ function ProjectDialog({
   const isFirst = index === 0
   const isLast = index === total - 1
 
-  // "AUDIOVISUAL · AUDIOVISUAL" acontece quando o medium repete a categoria.
-  const metaParts = [
-    work.category === 'teatro' ? 'TEATRO' : 'AUDIOVISUAL',
-    work.year,
-    work.medium,
-  ].filter(Boolean)
-  const meta = metaParts.filter(
-    (part, partIndex) =>
-      metaParts.findIndex((other) => String(other).toLowerCase() === String(part).toLowerCase()) === partIndex,
-  )
+  // "AUDIOVISUAL · AUDIOVISUAL · PILOTO..." era o medium repetindo a categoria.
+  const categoryLabel = work.category === 'teatro' ? 'TEATRO' : 'AUDIOVISUAL'
+  const mediumLabel = String(work.medium ?? '')
+    .replace(new RegExp(`^${categoryLabel}\\s*[·-]\\s*`, 'i'), '')
+    .trim()
+  const meta = [categoryLabel, work.year, mediumLabel].filter(Boolean)
 
   useEffect(() => {
     document.body.classList.add('fun-dialog-open')
@@ -539,9 +535,9 @@ export default function WorksSection({ works }) {
     >
       <div className="works__pin">
         <header className="works__head">
-          <p className="section-label">02 / TRABALHOS</p>
+          <p className="section-label">03 / TRABALHOS</p>
           <h2 id="works-title" className="brush-title">Trabalhos <sup>{String(visibleWorks.length).padStart(2, '0')}</sup></h2>
-          <p className="works__hint">{pinned ? 'SCROLL PARA O LADO · SETAS ←\uFE0E →\uFE0E' : 'TOQUE PARA ABRIR'}</p>
+          <p className="works__hint">{pinned ? 'ROLE PARA O LADO · SETAS ←\uFE0E →\uFE0E' : 'TOQUE PARA ABRIR'}</p>
           <div className="works__filter" role="tablist" aria-label="Filtrar trabalhos">
             {FILTERS.map((option) => (
               <button

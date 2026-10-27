@@ -12,8 +12,8 @@ export const profile = {
 export const about = {
   title: 'Sobre mim',
   paragraphs: [
-    'Atriz curitibana, Isabella iniciou sua carreira no Rio Grande do Sul em 2022, no teatro Paranóia Produções. Em 2023, integrou a companhia Asas de Papel, ampliando sua atuação para festivais, novas montagens e conteúdos audiovisuais.',
-    'De volta a Curitiba em 2025, ingressou no Barracão Encena, onde cursa Teatro e TV com conclusão prevista para 2027. Também atua em curtas e filmes realizados por alunos da PUCPR.',
+    'Atriz curitibana com trajetória pelo teatro e audiovisual, iniciou sua carreira no Rio Grande do Sul em 2022, no teatro Paranóia Produções, integrando o elenco de três espetáculos. Em 2023, integrou a companhia Asas de Papel, expandindo sua atuação para a criação de conteúdos audiovisuais, circulação em festivais de teatro e novas montagens cênicas.',
+    'De volta a Curitiba em 2025, ingressou na escola de teatro Barracão Encena, onde cursa Teatro e TV com conclusão prevista para 2027. Paralelamente aos estudos teatrais, atuou no audiovisual em curta-metragens e filmes realizados por alunos da PUCPR.',
   ],
   image: '/images/isa-hero-green.webp',
   reveal: '/images/isa-about-reveal.webp',
@@ -47,13 +47,14 @@ export const works = [
   {
     id: 'quem-me-dera-ser-amada',
     category: 'audiovisual',
-    title: 'Quem Me Derá Ser Amada',
-    year: '',
-    medium: 'Audiovisual',
+    title: 'Quem Me Dera Ser Amada',
+    year: '2026',
+    medium: 'Audiovisual · piloto de minissérie',
     ratio: '16 / 9',
-    direction: '',
-    script: '',
-    description: '',
+    direction: 'Yasmoon',
+    script: 'Yasmoon e Rafaela Karpinski',
+    description:
+      'Piloto de minissérie feito como TCC do curso de Cinema e Audiovisual da PUCPR e exibido na Saideira (banca de TCC), festival Cinergia e exibições independentes no bar Downtown.',
     images: [
       '/images/quem-me-dera-01.webp',
       '/images/quem-me-dera-02.webp',
@@ -61,7 +62,7 @@ export const works = [
       '/images/quem-me-dera-04.webp',
       '/images/quem-me-dera-05.webp',
     ],
-    alt: 'Isabella Monteiro em cena em Quem Me Derá Ser Amada',
+    alt: 'Isabella Monteiro em cena em Quem Me Dera Ser Amada',
     focus: '50% 50%',
   },
   {
@@ -73,7 +74,7 @@ export const works = [
     direction: 'Gabriel Eneas',
     script: 'Gabriel Eneas, Artur Bitencourt e Rafael Avila',
     description:
-      'Longa-metragem com direção de Gabriel Eneas e roteiro de Gabriel Eneas, Artur Bitencourt e Rafael Avila.',
+      'Longa feito de forma independente e exibido em uma sessão na Cinemateca de Curitiba.',
     images: ['/images/delirio-1.webp', '/images/delirio-2.webp'],
     alt: 'Isabella Monteiro em cena no filme Delírio',
     ratio: '728 / 391',
@@ -83,10 +84,11 @@ export const works = [
     category: 'audiovisual',
     title: 'Ecos',
     year: '2025',
-    medium: 'Audiovisual',
+    medium: 'Audiovisual · curta-metragem',
     direction: 'Juscelino Zilio',
     script: 'Criação do grupo',
-    description: 'Audiovisual com direção de Juscelino Zilio e criação do grupo.',
+    description:
+      'Curta feito no módulo de TV na escola de teatro Barracão Encena e exibido em uma Mostra do mesmo.',
     images: ['/images/ecos-1.webp'],
     alt: 'Isabella Monteiro em cena no filme Ecos',
     ratio: '835 / 380',
@@ -100,7 +102,7 @@ export const works = [
     direction: 'Vitor Mendes',
     script: 'Grupo Asas de Papel Produções',
     description:
-      'Espetáculo teatral com direção de Vitor Mendes e texto do Grupo Asas de Papel Produções, no Teatro Municipal Paschoal Carlos Magno.',
+      'Peça feita em grupo pela equipe de criação da companhia Asas de Papel e apresentada de forma independente.',
     images: [
       '/images/divina-tragicomedia-4.webp',
       '/images/divina-tragicomedia-1.webp',
@@ -120,7 +122,7 @@ export const works = [
     direction: 'Fernando Rodembuch',
     script: 'Millôr Fernandes',
     description:
-      'Espetáculo teatral com direção de Fernando Rodembuch e texto de Millôr Fernandes, no Teatro Municipal Paschoal Carlos Magno.',
+      'Peça feita na escola de teatro Paranóia Produções pela turma avançada e apresentada de forma independente.',
     images: [
       '/images/historia-3.webp',
       '/images/historia-1.webp',
@@ -142,7 +144,7 @@ export const works = [
     direction: 'João Mauro Cruz',
     script: 'Criação do grupo',
     description:
-      'Espetáculo teatral com direção de João Mauro Cruz e criação do grupo, no Teatro Barracão Encena.',
+      'Peça feita no módulo de Farsa na escola de teatro Barracão Encena e apresentada no 29° Festival Alunos EnCena.',
     images: [
       '/images/teicoscopia-1.webp',
       '/images/teicoscopia-2.webp',
@@ -162,7 +164,7 @@ export const works = [
     direction: 'Felipe Renã',
     script: 'Adaptação de Gianfrancesco Guarnieri',
     description:
-      'Espetáculo teatral com direção de Felipe Renã e adaptação de Gianfrancesco Guarnieri, no Teatro Barracão Encena.',
+      'Peça feita no módulo de Drama na escola de teatro Barracão Encena e apresentada no 30° Festival Alunos EnCena.',
     images: [
       '/images/black-tie-3.webp',
       '/images/black-tie-1.webp',
